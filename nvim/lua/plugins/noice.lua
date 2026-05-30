@@ -11,8 +11,12 @@ return {
   },
   config = function()
     require("noice").setup({
-      messages = { enabled = true },
+      cmdline = {
+        view = "cmdline",  -- classic bottom cmdline, not floating popup
+      },
+      messages = { enabled = true, view = "mini" },  -- minimal message display
       popupmenu = { enabled = true },
+      notify = { enabled = true, view = "mini" },  -- small corner notifications
       lsp = {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -24,6 +28,7 @@ return {
         signature = { enabled = false },
       },
       presets = {
+        bottom_search = true,       -- search stays at bottom
         long_message_to_split = true,
         inc_rename = true,
       },

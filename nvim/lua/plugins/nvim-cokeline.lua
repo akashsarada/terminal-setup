@@ -20,7 +20,7 @@ return {
 			dark = get_hex("Normal", "bg"),
 			text = get_hex("Comment", "fg"),
 			grey = get_hex("ColorColumn", "bg"),
-			high = "#20fc03", -- Your signature green
+			high = "#5fd7ff", -- Match tmux primary (colour81)
 		}
 
 		require("cokeline").setup({

@@ -1,19 +1,33 @@
--- Plugin: kanagawa.nvim & doom-one.nvim
--- Description: Aesthetic color schemes for Neovim.
--- Config: Using Kanagawa-Dragon with native transparency enabled.
+-- Plugin: kanagawa.nvim
+-- Description: Color scheme matching tmux (blue/purple on black).
+-- Config: Kanagawa-Dragon base with custom overrides for blue/purple accent.
 
 return {
 	{
 		"rebelot/kanagawa.nvim",
-		lazy = false, -- Themes should load immediately
-		priority = 1000, -- Load this before everything else
+		lazy = false,
+		priority = 1000,
 		config = function()
 			require("kanagawa").setup({
-				transparent = true, -- Cleaner than manual 'guibg=none'
-				theme = "dragon", -- Options: wave, dragon, lotus
+				transparent = true,
+				theme = "dragon",
+				colors = {
+					theme = {
+						all = {
+							ui = {
+								bg_gutter = "none",
+							},
+						},
+					},
+				},
 				overrides = function(colors)
 					return {
-						-- Ensures the gutter (line numbers) is also transparent
+						-- Match tmux primary (colour81 = #5fd7ff)
+						CursorLineNr = { fg = "#5fd7ff", bold = true },
+						Title = { fg = "#5fd7ff", bold = true },
+						-- Match tmux secondary (colour141 = #af87ff)
+						Statement = { fg = "#af87ff" },
+						-- Keep gutter transparent
 						LineNr = { bg = "none" },
 						SignColumn = { bg = "none" },
 					}
@@ -22,6 +36,4 @@ return {
 			vim.cmd.colorscheme("kanagawa-dragon")
 		end,
 	},
-
-	{ "NTBBloodbath/doom-one.nvim" }, -- Kept as a backup
 }

@@ -25,23 +25,26 @@ return {
 			local datetime = os.date(" %Y-%m-%d-%A   %H:%M:%S ")
 			local hour = tableTime.hour
 			local greetingsTable = {
-				[1] = "  Sleep well",
-				[2] = "  Good morning",
-				[3] = "  Good afternoon",
-				[4] = "  Good evening",
-				[5] = "�  Good night",
+				[1] = "😴  Go to sleep",
+				[2] = "☀️  Rise and grind",
+				[3] = "🍜  Don't forget to eat lunch",
+				[4] = "⚡  Lock in",
+				[5] = "💀  Why are you still here",
+				[6] = "🌙  Touch grass before bed",
 			}
 			local greetingIndex = 0
 			if hour == 23 or hour < 7 then
 				greetingIndex = 1
-			elseif hour < 12 then
+			elseif hour < 11 then
 				greetingIndex = 2
-			elseif hour >= 12 and hour < 18 then
+			elseif hour < 15 then
 				greetingIndex = 3
-			elseif hour >= 18 and hour < 21 then
+			elseif hour < 18 then
 				greetingIndex = 4
-			elseif hour >= 21 then
+			elseif hour < 21 then
 				greetingIndex = 5
+			else
+				greetingIndex = 6
 			end
 			return datetime .. "  " .. greetingsTable[greetingIndex] .. ", " .. name
 		end
@@ -79,7 +82,7 @@ return {
 			dashboard.button("6", "�  Quit", "<cmd>qa<CR>"),
 		}
 
-		dashboard.section.footer.val = vim.split("\n\n" .. getGreeting("Chagu"), "\n")
+		dashboard.section.footer.val = vim.split("\n\n" .. getGreeting("Akash"), "\n")
 
 		vim.api.nvim_create_autocmd("User", {
 			pattern = "LazyVimStarted",
@@ -90,7 +93,7 @@ return {
 				local ms = math.floor(stats.startuptime * 100 + 0.5) / 100
 				dashboard.section.footer.val =
 					--	{ " ", " ", " ", " Loaded " .. stats.count .. " plugins  in " .. ms .. " ms " }
-					vim.split("\n\n" .. getGreeting("Chagu"), "\n")
+					vim.split("\n\n" .. getGreeting("Akash"), "\n")
 				dashboard.section.header.opts.hl = "DashboardFooter"
 				pcall(vim.cmd.AlphaRedraw)
 			end,
