@@ -178,6 +178,24 @@ copy_dotfiles() {
     echo "✅ Copied nvim config to ~/.config/nvim"
   fi
 
+  # Handle ~/.git-hooks
+  if [ -e "$HOME/.git-hooks" ]; then
+    read -rp "⚠️  ~/.git-hooks already exists. Overwrite it? [y/N] " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+      rm -rf "$HOME/.git-hooks"
+      cp -r "$SCRIPT_DIR/git-hooks" "$HOME/.git-hooks"
+      echo "✅ Overwrote ~/.git-hooks"
+    else
+      echo "⏩ Skipped ~/.git-hooks"
+    fi
+  else
+    cp -r "$SCRIPT_DIR/git-hooks" "$HOME/.git-hooks"
+    echo "✅ Copied git-hooks to ~/.git-hooks"
+  fi
+  chmod +x "$HOME/.git-hooks/"*
+  git config --global core.hooksPath "$HOME/.git-hooks"
+  echo "✅ Set global git hooksPath to ~/.git-hooks"
+
   # Handle ~/.tmux.conf
   if [ -e "$HOME/.tmux.conf" ]; then
     read -rp "⚠️  ~/.tmux.conf already exists. Overwrite it? [y/N] " confirm
