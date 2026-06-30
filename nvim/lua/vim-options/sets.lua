@@ -7,10 +7,41 @@ vim.o.ignorecase = true
 vim.o.wrap = false
 vim.o.hlsearch = false
 vim.o.signcolumn = "yes"
+vim.o.autoread = true
 vim.opt.updatetime = 300
 vim.opt.smartindent = true
 vim.opt.autoindent = true
-vim.opt.clipboard = ""
+vim.opt.clipboard = "unnamedplus"
+
+vim.g.clipboard = {
+	name = "OSC 52",
+	copy = {
+		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+	},
+	paste = {
+		["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+		["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+	},
+}
+
+vim.api.nvim_create_autocmd({"FocusGained", "BufEnter", "CursorHold"}, {
+	command = "silent! checktime",
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function()
+		vim.opt_local.wrap = true
+		vim.opt_local.linebreak = true
+	end,
+})
+
+vim.keymap.set("n", "<leader>yp", function()
+	local path = vim.fn.expand("%:p")
+	vim.fn.setreg("+", path)
+	vim.notify("Copied: " .. path)
+end, { desc = "Copy current file path to clipboard" })
 
 vim.filetype.add({
 	extension = {

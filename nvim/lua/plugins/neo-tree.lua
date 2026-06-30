@@ -17,7 +17,7 @@ return {
 				width = 50,
 				height = 30,
 				mappings = {
-					["<BS>"] = "noop", -- disable backspace going up
+					["<BS>"] = "noop",
 					["o"] = "open",
 					["<CR>"] = "open",
 					["a"] = "add",
@@ -27,6 +27,7 @@ return {
 			},
 			filesystem = {
 				bind_to_cwd = false,
+				use_libuv_file_watcher = true,
 				follow_current_file = {
 					enabled = true,
 					leave_dirs_open = true,
