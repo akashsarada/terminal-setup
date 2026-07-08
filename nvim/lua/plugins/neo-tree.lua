@@ -23,6 +23,7 @@ return {
 					["a"] = "add",
 					["d"] = "delete",
 					["r"] = "rename",
+					["-"] = "close_node",
 				},
 			},
 			filesystem = {
