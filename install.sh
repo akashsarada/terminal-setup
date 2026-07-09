@@ -209,6 +209,22 @@ copy_dotfiles() {
     cp "$SCRIPT_DIR/tmux.conf" "$HOME/.tmux.conf"
     echo "✅ Copied tmux config to ~/.tmux.conf"
   fi
+  # Handle AI steering files (only if the tool is installed)
+  if command -v kiro &>/dev/null || [ -d "$HOME/.kiro" ]; then
+    mkdir -p "$HOME/.kiro/steering"
+    cp "$SCRIPT_DIR/ai/"*.md "$HOME/.kiro/steering/"
+    echo "✅ Copied AI steering files to ~/.kiro/steering/"
+  else
+    echo "⏩ Skipped ~/.kiro/steering/ (kiro not installed)"
+  fi
+
+  if command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
+    mkdir -p "$HOME/.claude/rules"
+    cp "$SCRIPT_DIR/ai/"*.md "$HOME/.claude/rules/"
+    echo "✅ Copied AI steering files to ~/.claude/rules/"
+  else
+    echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
+  fi
 }
 
 # Run all steps

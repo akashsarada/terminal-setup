@@ -48,6 +48,23 @@ else
   exit 1
 fi
 
+# Copy AI steering files (only if the tool is installed)
+if command -v kiro &>/dev/null || [ -d ~/.kiro ]; then
+  mkdir -p ~/.kiro/steering
+  cp "$SCRIPT_DIR/ai/"*.md ~/.kiro/steering/
+  echo "✅ AI steering files copied to ~/.kiro/steering/"
+else
+  echo "⏩ Skipped ~/.kiro/steering/ (kiro not installed)"
+fi
+
+if command -v claude &>/dev/null || [ -d ~/.claude ]; then
+  mkdir -p ~/.claude/rules
+  cp "$SCRIPT_DIR/ai/"*.md ~/.claude/rules/
+  echo "✅ AI steering files copied to ~/.claude/rules/"
+else
+  echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
+fi
+
 # Reload tmux if running
 if tmux info &>/dev/null; then
   tmux source-file ~/.tmux.conf
