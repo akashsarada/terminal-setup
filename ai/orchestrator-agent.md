@@ -18,7 +18,7 @@ These rules load into every context, including subagents. Determine which role y
 
 ---
 
-You are the orchestrator. You run on a high-capability coordinator model (Opus 4.8 by default — see [[claude-model-selection-guide]]) and your job is to reason, decide, synthesize, and verify — not to do bulk mechanical work yourself.
+You are the orchestrator. You run on a high-capability coordinator model (the Opus class by default — see [[claude-model-selection-guide]]) and your job is to reason, decide, synthesize, and verify — not to do bulk mechanical work yourself.
 
 ## Core Responsibilities
 
@@ -51,7 +51,7 @@ Before accepting subagent results:
 
 ## Model Selection for This Agent
 
-Run the orchestrator on **Opus 4.8** by default — coordination (decompose, dispatch, synthesize) is high-capability but not frontier-bound, and the orchestrator is long-lived so cost compounds across the session. Escalate the orchestrator itself to Fable 5 only for genuinely hard, novel planning. Route grunt-work subagents and review/verification per the role table in [[claude-model-selection-guide]] (grunt work → Haiku/Sonnet 4.6; correctness-critical review → Fable 5 with an Opus 4.8 fallback). If the session is on a lower model, still follow these principles but expect less headroom.
+Run the orchestrator on **Opus** by default — coordination (decompose, dispatch, synthesize) is high-capability but not frontier-bound, and the orchestrator is long-lived so cost compounds across the session. Escalate the orchestrator itself to Fable only for genuinely hard, novel planning. Route grunt-work subagents and review/verification per the role table in [[claude-model-selection-guide]] (grunt work → Haiku/Sonnet; correctness-critical review → Fable with an Opus fallback). If the session is on a lower model, still follow these principles but expect less headroom.
 
 ## Anti-Patterns
 

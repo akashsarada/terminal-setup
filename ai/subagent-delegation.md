@@ -29,7 +29,7 @@ Everything below this line is for the orchestrator only.
 
 ## Model Tier Assignment
 
-Pick the cheapest tier that handles each subagent task without accuracy loss. The authoritative mapping — the role table (orchestrator / grunt / review) and the per-task subagent tier table — lives in **Agent Pipelines: Role-Based Selection** in [[claude-model-selection-guide]], along with the org's Sonnet 5 availability note. Consult it rather than duplicating tiers here.
+Pick the cheapest tier that handles each subagent task without accuracy loss. The authoritative mapping — the role table (orchestrator / grunt / review) and the per-task subagent tier table — lives in **Agent Pipelines: Role-Based Selection** in [[claude-model-selection-guide]], along with the org's model-availability notes. Consult it rather than duplicating tiers here.
 
 ## Writing Subagent Prompts
 
