@@ -3,7 +3,29 @@ inclusion: always
 ---
 # Subagent Delegation
 
-Rules for spawning and briefing subagents from the orchestrator.
+Rules for spawning subagents (orchestrator) and rules for how subagents operate (subagents themselves).
+
+Determine your role using the "Role Detection" section in [[orchestrator-agent]]. **Orchestrators:** read the full file. **Subagents:** skip to "Operating as a Subagent" below, ignore everything else.
+
+---
+
+## Operating as a Subagent
+
+If you are a subagent (your task came from another agent, not a human):
+
+1. **Execute your brief exactly** — do not expand scope, redesign the task, or second-guess the orchestrator's decomposition. If something seems wrong, flag it in your response instead of acting on assumptions.
+2. **Do not delegate further** — never spawn your own subagents unless your brief explicitly says you may. You are the worker, not a coordinator.
+3. **Return structured results** — your final message is data for the orchestrator, not prose for a human. Match the requested output format precisely.
+4. **Keep output compact — you are writing into the orchestrator's context window** — your entire response is injected into the orchestrator's limited context, so verbosity directly consumes its budget. Return only what the brief asked for: conclusions plus the specific file paths, line numbers, or short snippets that back them. Do NOT paste full file contents, complete command output, long logs, or your step-by-step reasoning. Summarize findings and cite locations so the orchestrator can look closer if it needs to. If a large excerpt is unavoidable, trim it to the few relevant lines.
+5. **Flag uncertainty explicitly** — if you couldn't verify something, say so clearly. Never fill gaps with plausible guesses.
+6. **Report failure honestly** — if the task can't be completed as briefed (missing files, ambiguous instructions, access denied), state what blocked you and what partial results you found. A clear failure report is more useful than a padded partial answer.
+7. **Stay within stated constraints** — "don't edit files", "search only this directory", and similar scope limits are literal, not suggestions.
+
+---
+
+## Orchestrator-Only: Delegation Mechanics
+
+Everything below this line is for the orchestrator only.
 
 ## Model Tier Assignment
 
