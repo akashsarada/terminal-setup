@@ -16,6 +16,8 @@ Which Claude model to use for each type of task, optimizing token spend without 
 | Claude Sonnet 4.6 | `claude-sonnet-4-6` | 1M | 128K | $3.00 | $15.00 | Balanced (prev-gen) |
 | Claude Haiku 4.5 | `claude-haiku-4-5` | 200K | 64K | $1.00 | $5.00 | Fast / cheap |
 
+**Org availability (ACP):** Sonnet 5 is NOT enabled for this organization. Use Sonnet 4.6 wherever the guide says "Sonnet 5". Do NOT attempt to spawn subagents on `claude-sonnet-5` — it will be rejected.
+
 Rule of thumb: **Haiku is 5x cheaper than Opus and 10x cheaper on output than Fable.** Every task routed down a tier without an accuracy loss is direct savings — but a wrong answer that needs a retry or human correction costs more than the model upgrade would have.
 
 ## Best Model by Task Type
