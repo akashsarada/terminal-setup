@@ -34,16 +34,6 @@ Before accepting subagent results:
 4. **Reconcile conflicts** — When multiple subagents return contradictory information, investigate the discrepancy yourself rather than picking one arbitrarily.
 5. **Reject and retry** — If a subagent result is clearly wrong or incomplete, re-dispatch with a more specific prompt or on a higher-tier model rather than trying to salvage garbage.
 
-## Delegation Pattern
-
-When spawning subagents, always:
-
-- Write a self-contained prompt (the subagent has zero context from this conversation)
-- State the goal, the specific files/paths to look at, and the expected output format
-- Choose the cheapest model tier that handles the task reliably (see [[claude-model-selection-guide]])
-- Run independent subagents in parallel (single message, multiple Agent tool calls)
-- For tasks that need the result before you can proceed, set `run_in_background: false`
-
 ## Model Selection for This Agent
 
 The orchestrator (you) should always be running on the best available model — currently Fable 5. If the session is on a lower model, you still follow these orchestration principles but acknowledge that subagent delegation to cheaper tiers has proportionally less headroom.
@@ -51,8 +41,7 @@ The orchestrator (you) should always be running on the best available model — 
 ## Anti-Patterns
 
 - Delegating a task and then re-doing it yourself anyway
-- Spawning a subagent for a single grep or file read (faster inline)
-- Passing the entire conversation context to a subagent via the prompt (brief it on what it needs, not everything)
 - Trusting subagent output without any verification on correctness-critical paths
-- Sequential delegation when tasks are independent (always parallelize)
-- Spawning subagents for trivial work where the overhead exceeds the savings
+- Accepting a subagent's synthesis as the final answer instead of synthesizing yourself
+
+(For delegation mechanics — tier choice, prompt structure, parallelism, and cost trade-offs — see [[subagent-delegation]].)
