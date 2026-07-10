@@ -35,21 +35,19 @@ Accuracy is not at risk on these because the tasks are shallow, well-specified, 
 | High-volume moderation / filtering | Combine with the Batch API for 50% off |
 | Subagent grunt work | Cheap parallel workers inside a larger agent pipeline |
 
-### Route to Sonnet 5 (default workhorse)
+### Route to Sonnet 4.6 (default workhorse)
 
-Near-Opus quality on coding and agentic work at 60% of the input price. This should be the **default choice for most production workloads**:
+Near-Opus quality on coding and agentic work at ~60% of the input price. This should be the **default choice for most production workloads** (Sonnet 5 is not enabled for this org — see the org-availability note above):
 
 | Task | Notes |
 |---|---|
 | Everyday coding (features, fixes, refactors) | `effort: "high"` default; `xhigh` for the hardest tasks |
 | Summarization of long documents | 1M context; cache the document prefix if queried repeatedly |
 | RAG / retrieval-augmented Q&A | Strong grounding; use citations for verifiability |
-| Standard agentic loops and tool use | More tool-eager than 4.6 by default |
+| Standard agentic loops and tool use | Reliable tool use; the workhorse for agentic loops |
 | Data analysis and report generation | Pair with the code execution server tool |
 | Chat / conversational products | `effort: "medium"` or `"low"` for latency-sensitive chat |
 | Content generation | Instruction-following is very literal — precise prompts pay off |
-
-Note: Sonnet 5's tokenizer produces ~30% more tokens than Sonnet 4.6 for the same text — re-baseline budgets with `count_tokens` rather than reusing old numbers.
 
 ### Route to Opus 4.8 (hard problems, autonomy)
 
@@ -57,7 +55,7 @@ Note: Sonnet 5's tokenizer produces ~30% more tokens than Sonnet 4.6 for the sam
 |---|---|
 | Long-horizon autonomous coding (multi-hour runs, large migrations) | State-of-the-art; give the full spec up front in one turn |
 | Complex architecture and design decisions | `effort: "high"` or `"xhigh"` |
-| Code review / bug hunting | Better recall and precision than any Sonnet; tell it to report everything and filter downstream |
+| Code review / bug hunting | Baseline for review; better recall/precision than any Sonnet. Escalate to Fable 5 for correctness-critical review (see Agent Pipelines below) |
 | Knowledge work deliverables (docx/pptx/xlsx, financial analysis) | Visually verifies its own output |
 | Vision-heavy work (screenshots, dense documents, computer use) | High-res support up to 2576px; 1080p screenshots balance cost/accuracy |
 | Multi-agent orchestration (as the coordinator) | Use cheaper models for the subagents |
@@ -72,8 +70,33 @@ At $10/$50 per MTok, use only where Opus 4.8 demonstrably falls short:
 | Hardest unsolved reasoning problems | Start with your hardest problems, not routine ones |
 | Longest-horizon agentic work (overnight runs, first-shot builds of well-specified systems) | Turns can run many minutes — plan streaming and async check-ins |
 | Deep research and end-to-end enterprise deliverables | Excellent parallel subagent delegation |
+| Correctness-critical code review / adversarial verification | Recall/precision-bound — the miss-a-bug asymmetry justifies the frontier tier for a bounded, one-shot pass (see Agent Pipelines below). Wire an Opus 4.8 fallback for `refusal` stops |
 
 Caveats: thinking is always on (omit the `thinking` param), safety classifiers can return `stop_reason: "refusal"` (ship a fallback to `claude-opus-4-8` via the server-side `fallbacks` beta), and it requires 30-day data retention. Not the default Opus upgrade path — routine work is cheaper *and* often faster on Opus 4.8.
+
+## Agent Pipelines: Role-Based Selection
+
+In an orchestrator + subagents pipeline, pick the model per role, not per app:
+
+| Role | Model | Why |
+|---|---|---|
+| Orchestrator / coordinator | Opus 4.8 | Long-lived across the whole session; coordination (decompose, dispatch, synthesize) is high-capability but not frontier-bound, so Fable's cost rarely pays off. Escalate the orchestrator to Fable 5 only for genuinely hard, novel planning. |
+| Grunt-work subagents | Haiku 4.5 / Sonnet 4.6 | Shallow, well-specified, easy to validate (reading, search, extraction, simple codegen). |
+| Review / adversarial verification | Fable 5 (baseline Opus 4.8) | Correctness-critical and recall-bound — the value is catching the bug the tier below misses. Cost is bounded per pass, and the miss-a-bug asymmetry justifies the frontier tier. Wire an Opus 4.8 fallback for Fable `refusal` stops. |
+
+Subagent tier by task type:
+
+| Subagent task | Model | Rationale |
+|---|---|---|
+| File reading, search, listing, extraction | Haiku 4.5 | Shallow, well-specified, easy to validate |
+| Classification, labeling, formatting | Haiku 4.5 | Constrained output space eliminates errors |
+| Bulk repetitive edits (same pattern, many files) | Haiku 4.5 | Template-following; validate one then trust the rest |
+| Summarization of a single file or section | Haiku 4.5 | Low reasoning required |
+| Code generation (simple, well-specified) | Sonnet 4.6 | Needs some reasoning but not frontier |
+| Multi-file investigation, bug hunting | Sonnet 4.6 | Needs to connect dots across files |
+| Complex refactoring with judgment calls | Opus 4.8 | Architectural reasoning required |
+| Security-sensitive code, correctness-critical logic | Opus 4.8 | Errors are expensive; don't cheap out |
+| Independent code review / adversarial verification | Fable 5 (baseline Opus 4.8) | Recall/precision-bound; escalate for high-stakes reviews |
 
 ## Token Optimization (without losing accuracy)
 
@@ -91,7 +114,7 @@ Any non-latency-sensitive workload — evals, backfills, bulk classification, ni
 | Effort | Use for |
 |---|---|
 | `low` | Subagents, chat, simple lookups — fewer/consolidated tool calls, terse output |
-| `medium` | Cost-sensitive routes; Sonnet 5 at `medium` ≈ Sonnet 4.6 at `high` |
+| `medium` | Cost-sensitive routes; often matches `high` quality on simpler work at lower latency |
 | `high` | Default — the sweet spot balancing quality and token efficiency |
 | `xhigh` | Hardest coding and agentic work (Claude Code's default) |
 | `max` | Correctness matters more than cost; watch for overthinking on routine tasks |
@@ -105,7 +128,7 @@ Don't pick one model for a whole application. Classify requests cheaply (Haiku c
 Malformed output that forces a retry doubles cost. `output_config.format` with a JSON schema (or `strict: true` on tools) guarantees valid, parseable output on the first attempt — this is a cost lever as much as a correctness one.
 
 ### 6. Task budgets for agentic loops (beta)
-On Fable 5 / Sonnet 5 / Opus 4.8 / 4.7, `output_config.task_budget` (beta `task-budgets-2026-03-13`, min 20K tokens) gives the model a visible countdown so it paces itself and finishes gracefully instead of burning tokens then getting cut off.
+On Fable 5 / Opus 4.8 / 4.7 (and Sonnet), `output_config.task_budget` (beta `task-budgets-2026-03-13`, min 20K tokens) gives the model a visible countdown so it paces itself and finishes gracefully instead of burning tokens then getting cut off.
 
 ### 7. Context hygiene
 - Right-size `max_tokens`: ~256 for classification, ~16K non-streaming default, ~64K streaming.
@@ -128,7 +151,7 @@ Before routing a task to a cheaper model, make failure detectable:
 |---|---|---|
 | Classify / route / extract short fields | Haiku 4.5 | — |
 | High-volume, not time-sensitive | Haiku or Sonnet + **Batch API** | `low`–`medium` |
-| Everyday coding, summarization, RAG, chat | Sonnet 5 | `high` (chat: `low`/`medium`) |
-| Hardest coding, autonomous agents, code review, vision | Opus 4.8 | `high`–`xhigh` |
-| Frontier reasoning, overnight autonomous runs | Fable 5 | `high`–`xhigh` |
+| Everyday coding, summarization, RAG, chat | Sonnet 4.6 | `high` (chat: `low`/`medium`) |
+| Hardest coding, autonomous agents, orchestration, code review baseline, vision | Opus 4.8 | `high`–`xhigh` |
+| Frontier reasoning, overnight runs, correctness-critical review | Fable 5 (fallback Opus 4.8) | `high`–`xhigh` |
 | Anything with repeated context | Same model + **prompt caching** | — |

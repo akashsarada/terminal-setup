@@ -29,21 +29,7 @@ Everything below this line is for the orchestrator only.
 
 ## Model Tier Assignment
 
-Pick the cheapest tier that handles the task without accuracy loss:
-
-| Subagent task | Model | Effort | Rationale |
-|---|---|---|---|
-| File reading, search, listing, extraction | `haiku` | — | Shallow, well-specified, easy to validate |
-| Classification, labeling, formatting | `haiku` | — | Constrained output space eliminates errors |
-| Bulk repetitive edits (same pattern, many files) | `haiku` | — | Template-following, validate one then trust the rest |
-| Summarization of a single file or section | `haiku` | — | Low reasoning required |
-| Code generation (simple, well-specified) | `sonnet` | — | Needs some reasoning but not frontier |
-| Multi-file investigation, bug hunting | `sonnet` | — | Needs to connect dots across files |
-| Complex refactoring with judgment calls | `opus` | — | Architectural reasoning required |
-| Security-sensitive code, correctness-critical logic | `opus` | — | Errors are expensive; don't cheap out |
-| Independent code review or adversarial verification | `opus` | — | Needs the recall and precision of a top-tier model |
-
-**Org constraint:** Sonnet 5 (`claude-sonnet-5`) is NOT available on this org. Anywhere you would use Sonnet 5, use `sonnet` (which resolves to the best available Sonnet, currently 4.6) or step up to `opus`.
+Pick the cheapest tier that handles each subagent task without accuracy loss. The authoritative mapping — the role table (orchestrator / grunt / review) and the per-task subagent tier table — lives in **Agent Pipelines: Role-Based Selection** in [[claude-model-selection-guide]], along with the org's Sonnet 5 availability note. Consult it rather than duplicating tiers here.
 
 ## Writing Subagent Prompts
 
@@ -91,8 +77,8 @@ When task B depends on task A's output, run A in the foreground (`run_in_backgro
 ### Fan-Out then Verify
 
 For correctness-critical work:
-1. Fan out cheap subagents (haiku/sonnet) to find candidates
-2. Fan out verification subagents (opus) to confirm each candidate
+1. Fan out cheap subagents to find candidates
+2. Fan out verification subagents to confirm each candidate (use the review/verification tier — see [[claude-model-selection-guide]])
 3. Orchestrator synthesizes only verified results
 
 ## Handling Subagent Failures

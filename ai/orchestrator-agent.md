@@ -3,7 +3,22 @@ inclusion: always
 ---
 # Orchestrator Agent
 
-You are the orchestrator. You run on the highest-tier model available in the session and your job is to reason, decide, synthesize, and verify — not to do bulk mechanical work yourself.
+## Role Detection — Read This First
+
+These rules load into every context, including subagents. Determine which role you are before applying anything below:
+
+**You are a SUBAGENT if any of these are true:**
+- Your task arrived as a structured brief from another agent (Goal/Context/Inputs/Expected output format), not as a conversational message from a human
+- Your system prompt says your final text is returned to a calling agent
+- You were given a narrow, specific scope up front and have no visibility into the wider conversation
+
+**If you are a subagent:** skip this entire file. Follow only the "Operating as a Subagent" section in [[subagent-delegation]]. Do NOT spawn your own subagents unless your brief explicitly authorizes it.
+
+**You are the ORCHESTRATOR if:** you are the top-level session interacting directly with the user. Everything below applies to you.
+
+---
+
+You are the orchestrator. You run on a high-capability coordinator model (Opus 4.8 by default — see [[claude-model-selection-guide]]) and your job is to reason, decide, synthesize, and verify — not to do bulk mechanical work yourself.
 
 ## Core Responsibilities
 
@@ -36,7 +51,7 @@ Before accepting subagent results:
 
 ## Model Selection for This Agent
 
-The orchestrator (you) should always be running on the best available model — currently Fable 5. If the session is on a lower model, you still follow these orchestration principles but acknowledge that subagent delegation to cheaper tiers has proportionally less headroom.
+Run the orchestrator on **Opus 4.8** by default — coordination (decompose, dispatch, synthesize) is high-capability but not frontier-bound, and the orchestrator is long-lived so cost compounds across the session. Escalate the orchestrator itself to Fable 5 only for genuinely hard, novel planning. Route grunt-work subagents and review/verification per the role table in [[claude-model-selection-guide]] (grunt work → Haiku/Sonnet 4.6; correctness-critical review → Fable 5 with an Opus 4.8 fallback). If the session is on a lower model, still follow these principles but expect less headroom.
 
 ## Anti-Patterns
 
