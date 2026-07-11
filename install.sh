@@ -142,6 +142,26 @@ install_verible() {
   echo "✅ Verible installed to /usr/local/bin"
 }
 
+install_jetbrains_mono() {
+  echo "📦 Installing JetBrains Mono Nerd Font..."
+  local FONT_DIR
+  if [[ "$OS" == "mac" ]]; then
+    FONT_DIR="$HOME/Library/Fonts"
+  else
+    FONT_DIR="$HOME/.local/share/fonts"
+    mkdir -p "$FONT_DIR"
+  fi
+  cp "$SCRIPT_DIR/font/"*.ttf "$FONT_DIR/"
+
+  echo "🔄 Reloading font cache..."
+  if [[ "$OS" == "mac" ]]; then
+    atsutil databases -remove && atsutil server -ping
+  else
+    fc-cache -f -v
+  fi
+  echo "✅ JetBrains Mono Nerd Font installed to $FONT_DIR"
+}
+
 bootstrap_lazy() {
   echo "📁 Checking Lazy.nvim installation..."
   if [ ! -d "$HOME/.local/share/nvim/lazy/lazy.nvim" ]; then
@@ -234,6 +254,7 @@ install_clang
 install_lua
 install_codelldb
 install_verible
+install_jetbrains_mono
 copy_dotfiles
 bootstrap_lazy
 sync_plugins

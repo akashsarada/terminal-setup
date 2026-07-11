@@ -3,6 +3,39 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Detect OS
+OS=""
+ARCH=""
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  OS="mac"
+elif [[ -f /etc/lsb-release ]] || [[ -f /etc/os-release ]]; then
+  if grep -qi ubuntu /etc/*release; then
+    OS="ubuntu"
+  elif grep -qi fedora /etc/*release; then
+    OS="fedora"
+  fi
+fi
+
+install_jetbrains_mono() {
+  echo "📦 Installing JetBrains Mono Nerd Font..."
+  local FONT_DIR
+  if [[ "$OS" == "mac" ]]; then
+    FONT_DIR="$HOME/Library/Fonts"
+  else
+    FONT_DIR="$HOME/.local/share/fonts"
+    mkdir -p "$FONT_DIR"
+  fi
+  cp "$SCRIPT_DIR/font/"*.ttf "$FONT_DIR/"
+
+  echo "🔄 Reloading font cache..."
+  if [[ "$OS" == "mac" ]]; then
+    atsutil databases -remove && atsutil server -ping
+  else
+    fc-cache -f -v
+  fi
+  echo "✅ JetBrains Mono Nerd Font installed to $FONT_DIR"
+}
+
 # Backup old configs
 mv ~/.config/nvim/ ~/.config/old_nvim 2>/dev/null || true
 mv ~/.tmux.conf ~/.old_tmux.conf 2>/dev/null || true
@@ -64,6 +97,9 @@ if command -v claude &>/dev/null || [ -d ~/.claude ]; then
 else
   echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
 fi
+
+# Install JetBrains Mono font
+install_jetbrains_mono
 
 # Reload tmux if running
 if tmux info &>/dev/null; then
