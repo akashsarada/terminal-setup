@@ -27,6 +27,17 @@ If you are a subagent (your task came from another agent, not a human):
 
 Everything below this line is for the orchestrator only.
 
+## What a Subagent Can and Can't See
+
+A subagent is a **fresh agent session on the same machine** — brief it around that reality:
+
+- **No conversation state.** It does not inherit this conversation, your reasoning, prior tool outputs, or anything you've discussed. It knows only what its prompt contains.
+- **No shared working directory.** Do not assume it starts in "the workspace we're in" or shares your current directory. State the **absolute path** to any workspace root, package, or file it must touch — never a relative path or "the file we were just looking at."
+- **Filesystem and tools, yes — but only where you point it.** It can read/write files and run tools against the same machine, so it *can* reach your workspace, uncommitted changes included (they're on disk). It just has no way to know *where* that is, or what's already been changed, unless you tell it. Nothing is shared through memory — only through the filesystem.
+- **No memory of progress.** If earlier steps already edited files or left the tree in some state, say so and point at the exact paths; the subagent must re-read from disk to learn the current state.
+
+Rule of thumb: if the subagent would need to have "been in the room" to do the task, put that information in the brief. When in doubt, pass absolute paths and the workspace root explicitly, and have it re-read files rather than assuming their contents.
+
 ## Model Tier Assignment
 
 Pick the cheapest tier that handles each subagent task without accuracy loss. The authoritative mapping — the role table (orchestrator / grunt / review) and the per-task subagent tier table — lives in **Agent Pipelines: Role-Based Selection** in [[claude-model-selection-guide]], along with the org's model-availability notes. Consult it rather than duplicating tiers here.
