@@ -42,6 +42,20 @@ Rule of thumb: if the subagent would need to have "been in the room" to do the t
 
 Pick the cheapest tier that handles each subagent task without accuracy loss. The authoritative mapping — the role table (orchestrator / grunt / review) and the per-task subagent tier table — lives in **Agent Pipelines: Role-Based Selection** in [[claude-model-selection-guide]], along with the org's model-availability notes. Consult it rather than duplicating tiers here.
 
+**ACP tiering is NOT automatic — you must pass `model` on every spawn.** The kiro/ACP backend runs a subagent on a chosen model only when the spawn call sets the `model` parameter. Omit it and the subagent falls back to the gateway default (`agent.model` = `auto`), so every subagent runs on the same model and no tiering happens. Nothing infers the tier from the task — the orchestrator maps task → tier → model ID and passes it explicitly.
+
+Use the **kiro/ACP model IDs (dotted form)**, not the API dash form (`claude-opus-4-8`). Discover the live list with `kiro-cli chat --list-models --format json`:
+
+| Class | kiro `model` ID | Credit rate |
+|---|---|---|
+| Haiku | `claude-haiku-4.5` | 0.4 |
+| Sonnet | `claude-sonnet-4.6` | 1.3 |
+| Opus | `claude-opus-4.8` (fallback `claude-opus-4.7`) | 2.2 |
+| Fable | `claude-fable-5` | 4.4 |
+| default (kiro auto-routes) | `auto` | 1.0 |
+
+⚠️ **Fable 5 is flagged "[Internal] DEVELOPMENT USE CASES ONLY — NOT FOR CUSTOMER DATA, ITAR, OR PII."** Do not route customer code or data through the Fable review tier; fall back to Opus (`claude-opus-4.8`) for anything touching customer data. Note also that `claude-sonnet-5` is available on the kiro/ACP backend even though the Claude Code backend rejects it — availability is backend-specific.
+
 ## Writing Subagent Prompts
 
 A subagent starts with zero context. Brief it like a smart colleague who just walked into the room:
