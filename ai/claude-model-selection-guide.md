@@ -9,14 +9,16 @@ Which Claude model to use for each type of task, optimizing token spend without 
 
 Each class maps to the concrete model this org currently uses, plus a fallback for when the primary is unavailable, rejected, or overkill.
 
-| Class | Current model (this org) | Model ID | Fallback | Context | Max Output | Input $/1M | Output $/1M |
-|---|---|---|---|---|---|---|---|
-| **Fable** (frontier) | Claude Fable 5 | `claude-fable-5` | → Opus | 1M | 128K | $10.00 | $50.00 |
-| **Opus** (high capability) | Claude Opus 4.8 | `claude-opus-4-8` | → Opus 4.7, then Sonnet | 1M | 128K | $5.00 | $25.00 |
-| **Sonnet** (balanced) | Claude Sonnet 4.6 | `claude-sonnet-4-6` | → Opus (up) / Haiku (down) | 1M | 128K | $3.00 | $15.00 |
-| **Haiku** (fast / cheap) | Claude Haiku 4.5 | `claude-haiku-4-5` | → Sonnet | 200K | 64K | $1.00 | $5.00 |
+| Class | Current model (this org) | Model ID (`kiro model`) | Fallback | Context | Max Output | Input $/1M | Output $/1M | Credit |
+|---|---|---|---|---|---|---|---|---|
+| **Fable** (frontier) | Claude Fable 5 | `claude-fable-5` | → Opus | 1M | 128K | $10.00 | $50.00 | 4.4 |
+| **Opus** (high capability) | Claude Opus 4.8 | `claude-opus-4.8` | → Opus 4.7, then Sonnet | 1M | 128K | $5.00 | $25.00 | 2.2 |
+| **Sonnet** (balanced) | Claude Sonnet 4.6 | `claude-sonnet-4.6` | → Opus (up) / Haiku (down) | 1M | 128K | $3.00 | $15.00 | 1.3 |
+| **Haiku** (fast / cheap) | Claude Haiku 4.5 | `claude-haiku-4.5` | → Sonnet | 200K | 64K | $1.00 | $5.00 | 0.4 |
 
-Also available: Claude Opus 4.7 (`claude-opus-4-7`, prev-gen Opus, same $5/$25) as the Opus fallback. Claude Sonnet 5 (`claude-sonnet-5`) exists but is **NOT enabled for this org** — the Sonnet class resolves to Sonnet 4.6 here. Do NOT spawn subagents on `claude-sonnet-5`; it will be rejected.
+The **Model ID** column is the kiro/ACP `model` value (dotted form) — pass it verbatim when spawning a subagent on a specific tier; discover the live list with `kiro-cli chat --list-models --format json`. The Anthropic API uses a dash variant (`claude-opus-4-8`). `Credit` is the kiro credit-rate multiplier per token (the operative cost signal for kiro usage).
+
+Also available: Claude Opus 4.7 (`claude-opus-4.7`, prev-gen Opus, same $5/$25, credit 2.2) as the Opus fallback. Claude Sonnet 5 (`claude-sonnet-5`, credit 1.3) is offered on the kiro/ACP backend but is rejected on the Claude Code backend for this org — availability is backend-specific, so the Sonnet class defaults to Sonnet 4.6 to stay portable.
 
 Rule of thumb: **Haiku is 5x cheaper than Opus and 10x cheaper on output than Fable.** Every task routed down a tier without an accuracy loss is direct savings — but a wrong answer that needs a retry or human correction costs more than the model upgrade would have.
 
@@ -72,7 +74,7 @@ Frontier pricing — use only where Opus demonstrably falls short:
 | Deep research and end-to-end enterprise deliverables | Excellent parallel subagent delegation |
 | Correctness-critical code review / adversarial verification | Recall/precision-bound — the miss-a-bug asymmetry justifies the frontier tier for a bounded, one-shot pass (see Agent Pipelines below). Wire an Opus fallback for `refusal` stops |
 
-Caveats: thinking is always on (omit the `thinking` param), safety classifiers can return `stop_reason: "refusal"` (ship a fallback to Opus via the server-side `fallbacks` beta), and it requires 30-day data retention. Not the default Opus upgrade path — routine work is cheaper *and* often faster on Opus.
+Caveats: thinking is always on (omit the `thinking` param), safety classifiers can return `stop_reason: "refusal"` (ship a fallback to Opus via the server-side `fallbacks` beta), and it requires 30-day data retention. **Fable is flagged for development use only — NOT for customer data, ITAR, or PII; do not route customer code or data through it, fall back to Opus for those.** Not the default Opus upgrade path — routine work is cheaper *and* often faster on Opus.
 
 ## Agent Pipelines: Role-Based Selection
 
@@ -82,7 +84,7 @@ In an orchestrator + subagents pipeline, pick the class per role, not per app:
 |---|---|---|
 | Orchestrator / coordinator | Opus | Long-lived across the whole session; coordination (decompose, dispatch, synthesize) is high-capability but not frontier-bound, so Fable's cost rarely pays off. Escalate the orchestrator to Fable only for genuinely hard, novel planning. |
 | Grunt-work subagents | Haiku / Sonnet | Shallow, well-specified, easy to validate (reading, search, extraction, simple codegen). |
-| Review / adversarial verification | Fable (baseline Opus) | Correctness-critical and recall-bound — the value is catching the bug the tier below misses. Cost is bounded per pass, and the miss-a-bug asymmetry justifies the frontier tier. Wire an Opus fallback for Fable `refusal` stops. |
+| Review / adversarial verification | Fable (baseline Opus) | Correctness-critical and recall-bound — the value is catching the bug the tier below misses. Cost is bounded per pass, and the miss-a-bug asymmetry justifies the frontier tier. Wire an Opus fallback for Fable `refusal` stops. **Fable is dev-use-only — for customer code/data, PII, or ITAR, use Opus instead.** |
 
 Subagent tier by task type:
 
