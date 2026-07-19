@@ -15,11 +15,11 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/os-release ]]; then
   if grep -qi ubuntu /etc/*release; then
     OS="ubuntu"
     ARCH="linux"
-  elif grep -qi fedora /etc/*release; then
+  elif grep -qi fedora /etc/*release || grep -qi cosmic /etc/*release || grep -qi pop /etc/*release; then
     OS="fedora"
     ARCH="linux"
   else
-    echo "❌ Unsupported Linux Distribution (Only Ubuntu/Fedora supported)"
+    echo "❌ Unsupported Linux Distribution (Only Ubuntu/Fedora/Cosmic supported)"
     exit 1
   fi
 else
