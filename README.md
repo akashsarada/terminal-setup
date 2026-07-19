@@ -6,7 +6,7 @@ Neovim + tmux + git hooks + AI steering files — portable across macOS, Ubuntu,
 
 - **nvim/** — Neovim config (Lazy.nvim, 44 plugins, LSP, treesitter, telescope, gitsigns)
 - **tmux.conf** — tmux config (vim nav, cyan/purple theme, OSC 52 clipboard, copy-mode binds)
-- **git-hooks/** — pre-commit (auto-rebase) + pre-push (CR reminder)
+- **git-hooks/** — pre-commit (auto-rebase)
 - **font/** — JetBrainsMono Nerd Font
 - **ai/** — AI steering files and delegation framework (Kiro, Claude Code, Antigravity)
 
