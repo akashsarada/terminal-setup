@@ -11,5 +11,5 @@ Spawn workers via the `subagent` tool. Tier→role is 1:1 — never substitute:
 - `tier=reviewer` → role `reviewer` (correctness-critical verification — opus)
 
 Default to `worker-cheap`; a read-only brief on `worker-standard` is a bug. Full spawn
-mechanics and caveats: /workplace/aksarada/.dotfiles/delegation/adapters/kiro.md — read it
+mechanics and caveats: ~/terminal-setup/ai/delegation/adapters/kiro.md — read it
 before your first spawn of a session.

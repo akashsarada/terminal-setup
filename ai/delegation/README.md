@@ -36,7 +36,7 @@ never auto-load. Link core.md (already done on this box) and remove the old dele
 symlinks:
 
 ```
-ln -sf /home/aksarada/workplace/.dotfiles/delegation/core.md ~/.kiro/steering/delegation-core.md
+ln -sf ~/terminal-setup/ai/delegation/core.md ~/.kiro/steering/delegation-core.md
 rm -f ~/.kiro/steering/orchestrator-agent.md ~/.kiro/steering/subagent-delegation.md
 ```
 
@@ -45,7 +45,7 @@ to 3 internal-search tools, `worker-standard`→sonnet, `reviewer`→opus; model
 spec):
 
 ```
-aim agents install --local /workplace/aksarada/.dotfiles/delegation/workers/kiro
+aim agents install --local ~/terminal-setup/ai/delegation/workers/kiro
 ```
 
 (AIM scans the path for an `agents/` directory — pointing it at a directory without one fails
