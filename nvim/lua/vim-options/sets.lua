@@ -13,17 +13,22 @@ vim.opt.smartindent = true
 vim.opt.autoindent = true
 vim.opt.clipboard = "unnamedplus"
 
-vim.g.clipboard = {
-	name = "OSC 52",
-	copy = {
-		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-	},
-	paste = {
-		["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-		["*"] = require("vim.ui.clipboard.osc52").paste("*"),
-	},
-}
+local ok, osc52 = pcall(require, "vim.ui.clipboard.osc52")
+if ok then
+	vim.g.clipboard = {
+		name = "OSC 52",
+		copy = {
+			["+"] = osc52.copy("+"),
+			["*"] = osc52.copy("*"),
+		},
+		paste = {
+			["+"] = osc52.paste("+"),
+			["*"] = osc52.paste("*"),
+		},
+	}
+else
+	vim.notify("vim.ui.clipboard.osc52 unavailable (needs Neovim 0.10+) — clipboard falls back to system", vim.log.levels.WARN)
+end
 
 vim.api.nvim_create_autocmd({"FocusGained", "BufEnter", "CursorHold"}, {
 	command = "silent! checktime",
