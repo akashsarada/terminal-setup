@@ -248,7 +248,9 @@ copy_dotfiles() {
   # Handle AI steering files (only if the tool is installed)
   if command -v kiro &>/dev/null || [ -d "$HOME/.kiro" ]; then
     mkdir -p "$HOME/.kiro/steering"
-    cp "$SCRIPT_DIR/ai/"*.md "$HOME/.kiro/steering/"
+    cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.kiro/steering/"
+    cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
+    cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
     echo "✅ Copied AI steering files to ~/.kiro/steering/"
   else
     echo "⏩ Skipped ~/.kiro/steering/ (kiro not installed)"
@@ -256,7 +258,9 @@ copy_dotfiles() {
 
   if command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
     mkdir -p "$HOME/.claude/rules"
-    cp "$SCRIPT_DIR/ai/"*.md "$HOME/.claude/rules/"
+    cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.claude/rules/"
+    cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
+    cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" "$HOME/.claude/rules/delegation-kiro-binding.md"
     echo "✅ Copied AI steering files to ~/.claude/rules/"
   else
     echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
