@@ -10,6 +10,20 @@ inclusion: always
 
 **MANDATORY**: When the user says "review", "fix", "address", "look at the report", or references ANY finding number — you MUST read `.cr-review-report.md` from disk FIRST before responding. Do NOT attempt to fix or discuss findings from memory. Do NOT guess what the report contains. READ THE FILE.
 
+## Subagent Delegation
+- Spawn subagents on a cheaper/faster model for parallelizable grunt work: file reading, search, classification, extraction, formatting, and bulk repetitive edits
+- Reserve the primary model for reasoning, architecture decisions, complex debugging, and final synthesis
+- When a task has 2+ independent research steps, delegate them in parallel rather than doing them sequentially
+- Never spawn a subagent for something faster to do inline (single file read, one grep)
+- See `delegation/core.md` for delegation policy and tiers; runtime mechanics and the tier→model maps live in `delegation/adapters/`
+
+## File Extensions: .ts vs .tsx
+- `.tsx` — files that render JSX (React components, pages, panels, modals, split-pane views)
+- `.ts` — pure TypeScript with no React rendering: helpers, utilities, data transformers, constants, types, enums, GraphQL codegen output
+- If a file has no JSX but uses React hooks (useState, useMemo, useCallback, useEffect) or makes API calls, extract it as a **custom hook** (`use*.ts`) — hooks are `.ts` not `.tsx` because they return data, not JSX
+- Never put standalone utility functions (formatCurrency, parseDate, buildFilter) in `.tsx` files — keep them in dedicated `.ts` helper/util modules
+- Test files follow their source: `component.test.tsx` for components, `helper.test.ts` for utilities
+
 ## TypeScript / React Style
 - Use kebab-case for file names, PascalCase for components
 - Define components using the `function` keyword (not arrow functions)
