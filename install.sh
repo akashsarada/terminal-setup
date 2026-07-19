@@ -31,6 +31,48 @@ echo "✅ Detected OS: $OS"
 echo "⏎ Click enter to proceed with full installation"
 read
 
+# AI tool selection
+INSTALL_KIRO=false
+INSTALL_CLAUDE=false
+INSTALL_ANTIGRAVITY=false
+
+prompt_ai_tools() {
+  echo ""
+  echo "🤖 Which AI coding tools do you want to install + configure?"
+  read -rp "  Kiro? [y/N] " ans; [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_KIRO=true
+  read -rp "  Claude Code? [y/N] " ans; [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_CLAUDE=true
+  read -rp "  Antigravity? [y/N] " ans; [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_ANTIGRAVITY=true
+}
+
+install_ai_tools() {
+  if [[ "$INSTALL_KIRO" == true ]]; then
+    echo "📦 Installing Kiro..."
+    if command -v kiro &>/dev/null; then
+      echo "✅ Kiro already installed — skipping"
+    elif [[ "$OS" == "mac" ]]; then
+      brew install --cask kiro || echo "⚠️  Kiro install failed — download from https://kiro.dev/downloads"
+    else
+      echo "ℹ️  Download Kiro from https://kiro.dev/downloads (.deb for Ubuntu/WSL, .rpm for Fedora/Cosmic) and install with your package manager"
+    fi
+  fi
+  if [[ "$INSTALL_CLAUDE" == true ]]; then
+    echo "📦 Installing Claude Code..."
+    if command -v claude &>/dev/null; then
+      echo "✅ Claude Code already installed — skipping"
+    else
+      npm install -g @anthropic-ai/claude-code || sudo npm install -g @anthropic-ai/claude-code
+    fi
+  fi
+  if [[ "$INSTALL_ANTIGRAVITY" == true ]]; then
+    echo "📦 Installing Antigravity..."
+    if command -v agy &>/dev/null; then
+      echo "✅ Antigravity already installed — skipping"
+    else
+      npm install -g @google/antigravity || sudo npm install -g @google/antigravity
+    fi
+  fi
+}
+
 install_common() {
   echo "📦 Installing common tools..."
   if [[ "$OS" == "mac" ]]; then
@@ -97,8 +139,16 @@ install_lua() {
 install_codelldb() {
   echo "📦 Installing codelldb..."
   if [[ "$OS" == "mac" ]]; then
+    if command -v codelldb &>/dev/null || brew list --cask codelldb &>/dev/null; then
+      echo "✅ codelldb already installed — skipping"
+      return
+    fi
     brew install --cask codelldb
   else
+    if [ -x ~/.local/bin/codelldb ] || [ -x ~/.local/share/nvim/mason/packages/codelldb/extension/adapter/codelldb ]; then
+      echo "✅ codelldb already installed — skipping"
+      return
+    fi
     mkdir -p ~/.local/bin
     cd /tmp
     local ARCH_SUFFIX="linux-x64"
@@ -114,6 +164,10 @@ install_codelldb() {
 
 install_verible() {
   echo "📦 Installing Verible..."
+  if command -v verible-verilog-ls &>/dev/null || [ -x /usr/local/bin/verible-verilog-ls ]; then
+    echo "✅ Verible already installed — skipping"
+    return
+  fi
   cd /tmp
 
   VERSION=$(curl -s https://api.github.com/repos/chipsalliance/verible/releases/latest | grep tag_name | cut -d '"' -f4)
@@ -246,39 +300,41 @@ copy_dotfiles() {
     cp "$SCRIPT_DIR/tmux.conf" "$HOME/.tmux.conf"
     echo "✅ Copied tmux config to ~/.tmux.conf"
   fi
-  # Handle AI steering files (only if the tool is installed)
-  if command -v kiro &>/dev/null || [ -d "$HOME/.kiro" ]; then
+  # Handle AI steering files (for selected tools or already-installed ones)
+  if [[ "$INSTALL_KIRO" == true ]] || command -v kiro &>/dev/null || [ -d "$HOME/.kiro" ]; then
     mkdir -p "$HOME/.kiro/steering"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.kiro/steering/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
     cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
     echo "✅ Copied AI steering files to ~/.kiro/steering/"
   else
-    echo "⏩ Skipped ~/.kiro/steering/ (kiro not installed)"
+    echo "⏩ Skipped ~/.kiro/steering/ (kiro not selected/installed)"
   fi
 
-  if command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
+  if [[ "$INSTALL_CLAUDE" == true ]] || command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
     mkdir -p "$HOME/.claude/rules"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.claude/rules/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
     echo "✅ Copied AI steering files to ~/.claude/rules/"
   else
-    echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
+    echo "⏩ Skipped ~/.claude/rules/ (claude not selected/installed)"
   fi
 
-  if command -v agy &>/dev/null || [ -d "$HOME/.gemini" ]; then
+  if [[ "$INSTALL_ANTIGRAVITY" == true ]] || command -v agy &>/dev/null || [ -d "$HOME/.gemini" ]; then
     mkdir -p "$HOME/.gemini"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"
     echo "✅ Copied AI steering files to ~/.gemini/"
   else
-    echo "⏩ Skipped ~/.gemini/ (antigravity not installed)"
+    echo "⏩ Skipped ~/.gemini/ (antigravity not selected/installed)"
   fi
 }
 
 # Run all steps
+prompt_ai_tools
 install_common
 install_node
+install_ai_tools
 install_clang
 install_lua
 install_codelldb
