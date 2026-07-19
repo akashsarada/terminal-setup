@@ -260,7 +260,6 @@ copy_dotfiles() {
     mkdir -p "$HOME/.claude/rules"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.claude/rules/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
-    cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" "$HOME/.claude/rules/delegation-kiro-binding.md"
     echo "✅ Copied AI steering files to ~/.claude/rules/"
   else
     echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
