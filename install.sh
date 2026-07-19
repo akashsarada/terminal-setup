@@ -73,12 +73,34 @@ install_ai_tools() {
   fi
 }
 
+install_neovim_tarball() {
+  # Distro repos (apt/dnf) lag behind — the config needs 0.11+. Install the
+  # official release tarball, which is always the latest stable.
+  if command -v nvim &>/dev/null && nvim --version | head -1 | grep -qE 'v0\.(1[1-9]|[2-9][0-9])'; then
+    echo "✅ Neovim $(nvim --version | head -1 | awk '{print $2}') already installed — skipping"
+    return
+  fi
+  local NVIM_ARCH="x86_64"
+  if [[ "$(uname -m)" == "aarch64" ]] || [[ "$(uname -m)" == "arm64" ]]; then
+    NVIM_ARCH="arm64"
+  fi
+  cd /tmp
+  curl -LO "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${NVIM_ARCH}.tar.gz"
+  sudo rm -rf /opt/nvim
+  sudo tar -C /opt -xzf "nvim-linux-${NVIM_ARCH}.tar.gz"
+  sudo mv "/opt/nvim-linux-${NVIM_ARCH}" /opt/nvim
+  sudo ln -sf /opt/nvim/bin/nvim /usr/local/bin/nvim
+  rm -f "nvim-linux-${NVIM_ARCH}.tar.gz"
+  echo "✅ Neovim $(nvim --version | head -1 | awk '{print $2}') installed to /opt/nvim"
+}
+
 install_common() {
   echo "📦 Installing common tools..."
   if [[ "$OS" == "mac" ]]; then
     brew install git curl ripgrep fd cmake python3 tmux neovim
   elif [[ "$OS" == "fedora" ]]; then
-    sudo dnf install -y neovim git curl ripgrep fd-find python3-pip tmux cmake unzip
+    sudo dnf install -y git curl ripgrep fd-find python3-pip tmux cmake unzip
+    install_neovim_tarball
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin
       if [ ! -e ~/.local/bin/fd ]; then
@@ -87,11 +109,8 @@ install_common() {
     fi
   else
     sudo apt update
-    sudo apt install -y software-properties-common
-    sudo apt remove -y neovim || true
-    sudo add-apt-repository ppa:neovim-ppa/stable -y
-    sudo apt update
-    sudo apt install -y neovim git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools
+    sudo apt install -y git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools
+    install_neovim_tarball
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin
       if [ ! -e ~/.local/bin/fd ]; then
