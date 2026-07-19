@@ -63,11 +63,11 @@ install_ai_tools() {
     fi
   fi
   if [[ "$INSTALL_ANTIGRAVITY" == true ]]; then
-    echo "📦 Installing Antigravity..."
+    echo "📦 Installing Antigravity CLI (agy)..."
     if command -v agy &>/dev/null; then
       echo "✅ Antigravity already installed — skipping"
     else
-      npm install -g @google/antigravity || sudo npm install -g @google/antigravity
+      curl -fsSL https://antigravity.google/cli/install.sh | bash
     fi
   fi
 }

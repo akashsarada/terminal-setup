@@ -43,22 +43,19 @@ sudo npm install -g @anthropic-ai/claude-code
 sudo npm install -g @anthropic-ai/claude-code
 ```
 
-### Antigravity (Google)
+### Antigravity CLI (Google)
 
-**macOS:**
+**All platforms (official installer, invoked as `agy`):**
 ```bash
-npm install -g @google/antigravity
+curl -fsSL https://antigravity.google/cli/install.sh | bash
 ```
 
-**Ubuntu / WSL:**
+**macOS (Homebrew alternative):**
 ```bash
-sudo npm install -g @google/antigravity
+brew install --cask antigravity-cli
 ```
 
-**Fedora / Cosmic:**
-```bash
-sudo npm install -g @google/antigravity
-```
+Installs to `~/.local/bin` — ensure that's on your `PATH`. Global rules load from `~/.gemini/GEMINI.md`.
 
 ## AI Steering Files
 
