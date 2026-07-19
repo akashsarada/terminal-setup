@@ -45,6 +45,7 @@ install_common() {
     fi
   else
     sudo apt update
+    sudo apt install -y software-properties-common
     sudo apt remove -y neovim || true
     sudo add-apt-repository ppa:neovim-ppa/stable -y
     sudo apt update
