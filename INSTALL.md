@@ -16,22 +16,15 @@ The install script copies steering/rules files for each tool if it detects them 
 
 ### Kiro
 
-**macOS:**
+**CLI (all platforms — this is what the delegation/steering setup targets):**
 ```bash
-brew install --cask kiro
+curl -fsSL https://cli.kiro.dev/install | bash
 ```
 
-**Ubuntu / WSL:**
-```bash
-# Download .deb from https://kiro.dev/downloads
-sudo dpkg -i kiro_*.deb
-```
-
-**Fedora / Cosmic:**
-```bash
-# Download .rpm from https://kiro.dev/downloads
-sudo dnf install ./kiro_*.rpm
-```
+**IDE (GUI editor, optional):** download from [kiro.dev/downloads](https://kiro.dev/downloads)
+- macOS: `.dmg` / `.pkg` (Apple Silicon or Intel)
+- Windows: `.exe`
+- Linux: `.deb` (Debian/Ubuntu 24+) or universal tarball
 
 ### Claude Code
 

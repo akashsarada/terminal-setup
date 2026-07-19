@@ -46,14 +46,13 @@ prompt_ai_tools() {
 
 install_ai_tools() {
   if [[ "$INSTALL_KIRO" == true ]]; then
-    echo "📦 Installing Kiro..."
+    echo "📦 Installing Kiro CLI..."
     if command -v kiro &>/dev/null; then
       echo "✅ Kiro already installed — skipping"
-    elif [[ "$OS" == "mac" ]]; then
-      brew install --cask kiro || echo "⚠️  Kiro install failed — download from https://kiro.dev/downloads"
     else
-      echo "ℹ️  Download Kiro from https://kiro.dev/downloads (.deb for Ubuntu/WSL, .rpm for Fedora/Cosmic) and install with your package manager"
+      curl -fsSL https://cli.kiro.dev/install | bash
     fi
+    echo "ℹ️  For the Kiro IDE (GUI), download from https://kiro.dev/downloads"
   fi
   if [[ "$INSTALL_CLAUDE" == true ]]; then
     echo "📦 Installing Claude Code..."
