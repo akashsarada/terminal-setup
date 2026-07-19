@@ -28,7 +28,6 @@ else
 fi
 
 echo "✅ Detected OS: $OS"
-echo "⏎ Click enter to proceed with full installation"
 read
 
 # AI tool selection
@@ -350,6 +349,7 @@ copy_dotfiles() {
 
 # Run all steps
 prompt_ai_tools
+echo "⏎ Click enter to proceed with full installation"
 install_common
 install_node
 install_ai_tools
