@@ -102,6 +102,15 @@ else
   echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
 fi
 
+if command -v agy &>/dev/null || [ -d ~/.gemini ]; then
+  mkdir -p ~/.gemini
+  cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.gemini/
+  cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.gemini/delegation-core.md
+  echo "✅ AI steering files copied to ~/.gemini/"
+else
+  echo "⏩ Skipped ~/.gemini/ (antigravity not installed)"
+fi
+
 # Install JetBrains Mono font
 install_jetbrains_mono
 

@@ -265,6 +265,15 @@ copy_dotfiles() {
   else
     echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
   fi
+
+  if command -v agy &>/dev/null || [ -d "$HOME/.gemini" ]; then
+    mkdir -p "$HOME/.gemini"
+    cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.gemini/"
+    cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"
+    echo "✅ Copied AI steering files to ~/.gemini/"
+  else
+    echo "⏩ Skipped ~/.gemini/ (antigravity not installed)"
+  fi
 }
 
 # Run all steps
