@@ -160,6 +160,22 @@ install_jetbrains_mono() {
     fc-cache -f -v
   fi
   echo "✅ JetBrains Mono Nerd Font installed to $FONT_DIR"
+
+  # WSL: also install to Windows side so the terminal emulator can use it
+  if grep -qi microsoft /proc/version 2>/dev/null; then
+    local WIN_USER
+    WIN_USER=$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')
+    if [[ -n "$WIN_USER" ]]; then
+      local WIN_FONT_DIR="/mnt/c/Users/$WIN_USER/AppData/Local/Microsoft/Fonts"
+      mkdir -p "$WIN_FONT_DIR"
+      cp "$SCRIPT_DIR/font/"*.ttf "$WIN_FONT_DIR/"
+      echo "✅ Also installed to Windows fonts ($WIN_FONT_DIR)"
+      echo "ℹ️  Select 'JetBrainsMono Nerd Font Mono' in Windows Terminal settings"
+    else
+      echo "⚠️  WSL detected but couldn't determine Windows user. Install fonts manually:"
+      echo "   cp font/*.ttf /mnt/c/Users/<YOU>/AppData/Local/Microsoft/Fonts/"
+    fi
+  fi
 }
 
 bootstrap_lazy() {
