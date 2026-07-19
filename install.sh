@@ -204,14 +204,14 @@ copy_dotfiles() {
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
       rm -rf "$HOME/.config/nvim"
       mkdir -p "$HOME/.config"
-      cp -r "$SCRIPT_DIR/config/nvim" "$HOME/.config/nvim"
+      cp -r "$SCRIPT_DIR/nvim" "$HOME/.config/nvim"
       echo "✅ Overwrote ~/.config/nvim"
     else
       echo "⏩ Skipped ~/.config/nvim"
     fi
   else
     mkdir -p "$HOME/.config"
-    cp -r "$SCRIPT_DIR/config/nvim" "$HOME/.config/nvim"
+    cp -r "$SCRIPT_DIR/nvim" "$HOME/.config/nvim"
     echo "✅ Copied nvim config to ~/.config/nvim"
   fi
 
