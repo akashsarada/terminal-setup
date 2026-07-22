@@ -34,11 +34,16 @@ vim.api.nvim_create_autocmd({"FocusGained", "BufEnter", "CursorHold"}, {
 	command = "silent! checktime",
 })
 
+vim.opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "markdown",
 	callback = function()
 		vim.opt_local.wrap = true
 		vim.opt_local.linebreak = true
+		vim.opt_local.spell = true
+		vim.opt_local.spelllang = "en_us"
+		vim.opt_local.spelloptions = "camel"
 	end,
 })
 

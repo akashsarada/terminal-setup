@@ -41,3 +41,6 @@ luac.out
 
 .idea/
 .DS_Store
+
+# Compiled spell files (each machine compiles its own from the .add source)
+*.spl
