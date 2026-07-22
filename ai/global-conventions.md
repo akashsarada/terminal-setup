@@ -69,8 +69,9 @@ inclusion: always
 - CR descriptions should include screenshots/screen recordings for UI changes
 
 ## Markdown
-- Do NOT wrap table cell content in bold (`**...**`) or inline code (`` `...` ``). Terminal markdown renderers (render-markdown.nvim) count the markup characters when computing column width but conceal them on display, so marked-up cells push borders out of alignment. Keep table cells plain text.
-- Emphasis, code spans, and links are fine everywhere EXCEPT inside table cells.
+- Do NOT wrap table cell content in bold (`**...**`), italics (`*...*` / `_..._`), or other emphasis markup. Terminal markdown renderers (render-markdown.nvim) count the emphasis characters when computing column width but conceal them on display, so emphasized cells push borders out of alignment. Keep table cells plain text.
+- Inline code (`` `...` ``) in table cells is fine — it renders without breaking alignment.
+- Emphasis and links are fine everywhere EXCEPT inside table cells.
 
 ## Performance
 - Watch for O(n²) algorithms that could be O(n)
