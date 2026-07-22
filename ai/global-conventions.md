@@ -68,6 +68,10 @@ inclusion: always
 - Put detailed explanations in the module-level TSDoc, not inline
 - CR descriptions should include screenshots/screen recordings for UI changes
 
+## Markdown
+- Do NOT wrap table cell content in bold (`**...**`) or inline code (`` `...` ``). Terminal markdown renderers (render-markdown.nvim) count the markup characters when computing column width but conceal them on display, so marked-up cells push borders out of alignment. Keep table cells plain text.
+- Emphasis, code spans, and links are fine everywhere EXCEPT inside table cells.
+
 ## Performance
 - Watch for O(n²) algorithms that could be O(n)
 - Identify missed caching opportunities
