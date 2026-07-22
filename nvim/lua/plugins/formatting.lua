@@ -10,6 +10,7 @@ return {
 			-- 1. Map filetypes to formatters
 			formatters_by_ft = {
 				lua = { "stylua" },
+				json = { "jq" },
 				cpp = { "clang-format" },
 				c = { "clang-format" },
 				verilog = { "verible" },

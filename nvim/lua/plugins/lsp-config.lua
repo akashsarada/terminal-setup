@@ -1,6 +1,6 @@
 -- Plugins: Mason, Mason-LSPConfig, nvim-lspconfig
 -- Description: Manages external tools and connects Neovim to Language Servers.
--- Languages: Lua, C++, Python, TypeScript, Verilog/SystemVerilog.
+-- Languages: Lua, C++, Python, TypeScript, JSON, Verilog/SystemVerilog.
 -- Keybinds: K (Hover), gd (Definition), gr (References), gi (Impl), <leader>rn (Rename).
 return {
     {
@@ -49,6 +49,7 @@ return {
                     },
                 },
                 ts_ls = {},
+                jsonls = {},
                 pyright = {
                     settings = {
                         python = {
