@@ -85,6 +85,7 @@ fi
 if command -v kiro &>/dev/null || [ -d ~/.kiro ]; then
   mkdir -p ~/.kiro/steering
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.kiro/steering/
+  cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.kiro/steering/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.kiro/steering/delegation-core.md
   cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" ~/.kiro/steering/delegation-kiro-binding.md
   echo "✅ AI steering files copied to ~/.kiro/steering/"
@@ -95,6 +96,7 @@ fi
 if command -v claude &>/dev/null || [ -d ~/.claude ]; then
   mkdir -p ~/.claude/rules
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.claude/rules/
+  cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.claude/rules/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.claude/rules/delegation-core.md
   echo "✅ AI steering files copied to ~/.claude/rules/"
 else
@@ -104,6 +106,7 @@ fi
 if command -v agy &>/dev/null || [ -d ~/.gemini ]; then
   mkdir -p ~/.gemini
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.gemini/
+  cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.gemini/delegation-core.md
   echo "✅ AI steering files copied to ~/.gemini/"
 else

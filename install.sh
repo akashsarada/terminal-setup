@@ -321,6 +321,7 @@ copy_dotfiles() {
   if [[ "$INSTALL_KIRO" == true ]] || command -v kiro &>/dev/null || [ -d "$HOME/.kiro" ]; then
     mkdir -p "$HOME/.kiro/steering"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.kiro/steering/"
+    cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.kiro/steering/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
     cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
     echo "✅ Copied AI steering files to ~/.kiro/steering/"
@@ -331,6 +332,7 @@ copy_dotfiles() {
   if [[ "$INSTALL_CLAUDE" == true ]] || command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
     mkdir -p "$HOME/.claude/rules"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.claude/rules/"
+    cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.claude/rules/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
     echo "✅ Copied AI steering files to ~/.claude/rules/"
   else
@@ -340,6 +342,7 @@ copy_dotfiles() {
   if [[ "$INSTALL_ANTIGRAVITY" == true ]] || command -v agy &>/dev/null || [ -d "$HOME/.gemini" ]; then
     mkdir -p "$HOME/.gemini"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.gemini/"
+    cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"
     echo "✅ Copied AI steering files to ~/.gemini/"
   else
