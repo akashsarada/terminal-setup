@@ -1,6 +1,6 @@
 -- Plugins: Mason, Mason-LSPConfig, nvim-lspconfig
 -- Description: Manages external tools and connects Neovim to Language Servers.
--- Languages: Lua, C++, Python, TypeScript, JSON, Verilog/SystemVerilog, Markdown (harper-ls grammar).
+-- Languages: Lua, C++, Python, TypeScript, JSON, Kotlin, Verilog/SystemVerilog, Markdown (harper-ls grammar).
 -- Keybinds: K (Hover), gd (Definition), gr (References), gi (Impl), <leader>rn (Rename).
 return {
     {
@@ -25,7 +25,7 @@ return {
         "williamboman/mason-lspconfig.nvim",
         lazy = false,
         opts = {
-            ensure_installed = { "lua_ls", "ts_ls", "jsonls", "clangd", "harper-ls" },
+            ensure_installed = { "lua_ls", "ts_ls", "jsonls", "clangd", "harper-ls", "kotlin_language_server" },
         },
     },
     {
@@ -50,6 +50,14 @@ return {
                 },
                 ts_ls = {},
                 jsonls = {},
+                kotlin_language_server = {
+                    init_options = {
+                        storagePath = vim.fn.stdpath("cache") .. "/kotlin-language-server",
+                    },
+                    handlers = {
+                        ["textDocument/publishDiagnostics"] = function() end,
+                    },
+                },
                 harper_ls = {
                     filetypes = { "markdown" },
                 },
@@ -79,7 +87,8 @@ return {
 
             for server, config in pairs(servers) do
                 config.capabilities = config.capabilities or capabilities
-                vim.lsp.enable(server, config)
+                vim.lsp.config(server, config)
+                vim.lsp.enable(server)
             end
 
             vim.api.nvim_create_autocmd("LspAttach", {

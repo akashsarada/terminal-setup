@@ -4,7 +4,7 @@ return {
     build = ":TSUpdate",
     dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     opts = {
-        ensure_installed = { "cpp", "lua", "vim", "markdown", "markdown_inline", "python", "typescript", "javascript" },
+        ensure_installed = { "cpp", "lua", "vim", "markdown", "markdown_inline", "python", "typescript", "javascript", "kotlin" },
         highlight = { enable = true },
         indent = { enable = true },
         textobjects = {

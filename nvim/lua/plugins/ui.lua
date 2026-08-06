@@ -1,39 +1,29 @@
--- Plugin: kanagawa.nvim
--- Description: Color scheme matching tmux (blue/purple on black).
--- Config: Kanagawa-Dragon base with custom overrides for blue/purple accent.
+-- Plugin: EdenEast/nightfox.nvim
+-- Description: Color scheme matching tmux (muted blue/purple).
+-- Config: nordfox (arctic blue-grey), transparent bg, tmux blue accent override.
 
 return {
 	{
-		"rebelot/kanagawa.nvim",
+		"EdenEast/nightfox.nvim",
 		lazy = false,
 		priority = 1000,
 		config = function()
-			require("kanagawa").setup({
-				transparent = true,
-				theme = "dragon",
-				colors = {
-					theme = {
-						all = {
-							ui = {
-								bg_gutter = "none",
-							},
-						},
+			require("nightfox").setup({
+				options = {
+					transparent = true,
+				},
+				groups = {
+					all = {
+						-- Match tmux primary (colour81 = #5fd7ff)
+						CursorLineNr = { fg = "#5fd7ff", style = "bold" },
+						Title = { fg = "#5fd7ff", style = "bold" },
+						-- Keep gutter transparent
+						LineNr = { bg = "NONE" },
+						SignColumn = { bg = "NONE" },
 					},
 				},
-				overrides = function(colors)
-					return {
-						-- Match tmux primary (colour81 = #5fd7ff)
-						CursorLineNr = { fg = "#5fd7ff", bold = true },
-						Title = { fg = "#5fd7ff", bold = true },
-						-- Match tmux secondary (colour141 = #af87ff)
-						Statement = { fg = "#af87ff" },
-						-- Keep gutter transparent
-						LineNr = { bg = "none" },
-						SignColumn = { bg = "none" },
-					}
-				end,
 			})
-			vim.cmd.colorscheme("kanagawa-dragon")
+			vim.cmd.colorscheme("nordfox")
 		end,
 	},
 }
