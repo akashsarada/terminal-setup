@@ -113,6 +113,18 @@ else
   echo "⏩ Skipped ~/.gemini/ (antigravity not installed)"
 fi
 
+# Refresh the sports agents (only if they're already installed)
+SPORTS_AGENT_DIR="$HOME/.meshclaw/workspace/f1-agent"
+if [ -d "$SPORTS_AGENT_DIR" ]; then
+  cp "$SCRIPT_DIR/sports/notify_helper.py" "$SPORTS_AGENT_DIR/notify_helper.py"
+  cp "$SCRIPT_DIR/sports/agents/"*.py "$SPORTS_AGENT_DIR/"
+  cp "$SCRIPT_DIR/sports/agents/"*.sh "$SPORTS_AGENT_DIR/"
+  chmod +x "$SPORTS_AGENT_DIR/"*.sh
+  echo "✅ Sports agents refreshed in $SPORTS_AGENT_DIR (restart any running agent to pick this up)"
+else
+  echo "⏩ Skipped sports agents (not installed)"
+fi
+
 # Install JetBrains Mono font
 install_jetbrains_mono
 

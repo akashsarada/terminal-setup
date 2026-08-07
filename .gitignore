@@ -42,5 +42,9 @@ luac.out
 .idea/
 .DS_Store
 
+# Python bytecode (sports/ ships a .py helper)
+__pycache__/
+*.py[cod]
+
 # Compiled spell files (each machine compiles its own from the .add source)
 *.spl

@@ -34,6 +34,67 @@ read
 INSTALL_KIRO=false
 INSTALL_CLAUDE=false
 INSTALL_ANTIGRAVITY=false
+INSTALL_SPORTS=false
+SPORTS_AUTOSTART=false
+
+# Live sports agents (F1 / cricket / World Cup) live in the MeshClaw workspace and
+# share this cross-platform notification backend.
+SPORTS_AGENT_DIR="$HOME/.meshclaw/workspace/f1-agent"
+
+prompt_sports_notifiers() {
+  echo ""
+  read -rp "🏟️  Install sports notifiers? [y/N] " ans
+  [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_SPORTS=true
+  # Only worth asking when the agents are actually going in
+  if [[ "$INSTALL_SPORTS" == true ]]; then
+    read -rp "  Start them automatically on login? [y/N] " ans
+    [[ "$ans" =~ ^[Yy]$ ]] && SPORTS_AUTOSTART=true
+  fi
+  return 0
+}
+
+install_sports_notifiers() {
+  if [[ "$INSTALL_SPORTS" != true ]]; then
+    echo "⏩ Skipped sports notifiers (not selected)"
+    return
+  fi
+  echo "📦 Installing sports notifiers..."
+  mkdir -p "$SPORTS_AGENT_DIR"
+
+  cp "$SCRIPT_DIR/sports/notify_helper.py" "$SPORTS_AGENT_DIR/notify_helper.py"
+  cp "$SCRIPT_DIR/sports/agents/"*.py "$SPORTS_AGENT_DIR/"
+  cp "$SCRIPT_DIR/sports/agents/"*.sh "$SPORTS_AGENT_DIR/"
+  chmod +x "$SPORTS_AGENT_DIR/"*.sh
+  echo "✅ Agents + control scripts copied to $SPORTS_AGENT_DIR"
+
+  # The ctl scripts all invoke $SPORTS_AGENT_DIR/.venv/bin/python3, and the F1/WEC
+  # agents need websockets, so the venv has to exist before anything can start.
+  if [ ! -x "$SPORTS_AGENT_DIR/.venv/bin/python3" ]; then
+    python3 -m venv "$SPORTS_AGENT_DIR/.venv" || {
+      echo "⚠️  Could not create the agent venv — ctl scripts won't run until it exists"
+      return
+    }
+  fi
+  if "$SPORTS_AGENT_DIR/.venv/bin/python3" -c "import websockets" 2>/dev/null; then
+    echo "✅ Agent venv ready (websockets already present)"
+  elif "$SPORTS_AGENT_DIR/.venv/bin/pip" install --quiet "websockets==14.2"; then
+    echo "✅ Agent venv ready (installed websockets 14.2)"
+  else
+    echo "⚠️  websockets install failed — F1/WEC need it: $SPORTS_AGENT_DIR/.venv/bin/pip install websockets==14.2"
+  fi
+
+  if [[ "$SPORTS_AUTOSTART" == true ]]; then
+    if "$SCRIPT_DIR/sports/install-autostart.sh"; then
+      echo "✅ Auto-start on login configured"
+    else
+      echo "⚠️  Auto-start setup failed — agents are installed, start them manually:"
+      echo "    $SPORTS_AGENT_DIR/cricketctl.sh start   (also wcctl / f1ctl / wecctl)"
+    fi
+  else
+    echo "ℹ️  Start one with: $SPORTS_AGENT_DIR/cricketctl.sh start   (also wcctl / f1ctl / wecctl)"
+    echo "ℹ️  Auto-start later with: $SCRIPT_DIR/sports/install-autostart.sh"
+  fi
+}
 
 prompt_ai_tools() {
   echo ""
@@ -41,6 +102,9 @@ prompt_ai_tools() {
   read -rp "  Kiro? [y/N] " ans; [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_KIRO=true
   read -rp "  Claude Code? [y/N] " ans; [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_CLAUDE=true
   read -rp "  Antigravity? [y/N] " ans; [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_ANTIGRAVITY=true
+  # A trailing '[[ ]] && VAR=true' returns 1 when the test fails, which under
+  # 'set -e' would abort the whole install. Always exit this function cleanly.
+  return 0
 }
 
 install_ai_tools() {
@@ -352,6 +416,7 @@ copy_dotfiles() {
 
 # Run all steps
 prompt_ai_tools
+prompt_sports_notifiers
 echo "⏎ Click enter to proceed with full installation"
 install_common
 install_node
@@ -361,6 +426,7 @@ install_lua
 install_codelldb
 install_verible
 install_jetbrains_mono
+install_sports_notifiers
 copy_dotfiles
 bootstrap_lazy
 sync_plugins

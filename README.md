@@ -9,6 +9,7 @@ Neovim + tmux + git hooks + AI steering files — portable across macOS, Ubuntu,
 - **git-hooks/** — pre-commit (auto-rebase)
 - **font/** — JetBrainsMono Nerd Font
 - **ai/** — AI steering files and delegation framework (Kiro, Claude Code, Antigravity)
+- **sports/** — live sports notification agents (cross-platform desktop notifications)
 
 ## Setup
 
