@@ -96,6 +96,9 @@ install_sports_notifiers() {
   fi
 }
 
+# Development tools selection
+INSTALL_PYTHON_DEV=false
+
 prompt_ai_tools() {
   echo ""
   echo "🤖 Which AI coding tools do you want to install + configure?"
@@ -105,6 +108,14 @@ prompt_ai_tools() {
   # A trailing '[[ ]] && VAR=true' returns 1 when the test fails, which under
   # 'set -e' would abort the whole install. Always exit this function cleanly.
   return 0
+}
+
+prompt_dev_tools() {
+  echo ""
+  echo "🔧 Which development tools do you want to install?"
+  echo "   Pyright: Python LSP for code intelligence (autocomplete, type checking)"
+  echo "   Black/isort: Python code formatters (recommended for consistent style)"
+  read -rp "  Python development tools (Pyright LSP + formatters)? [y/N] " ans; [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_PYTHON_DEV=true
 }
 
 install_ai_tools() {
@@ -241,6 +252,100 @@ install_codelldb() {
     unzip -o codelldb.vsix -d ~/.local/share/nvim/mason/packages/codelldb/extension
     ln -sf ~/.local/share/nvim/mason/packages/codelldb/extension/adapter/codelldb ~/.local/bin/codelldb
   fi
+}
+
+install_pyright() {
+  if [[ "$INSTALL_PYTHON_DEV" != true ]]; then
+    return
+  fi
+  
+  echo "📦 Installing Pyright (Python LSP)..."
+  
+  # Check if pyright is available as a command
+  if command -v pyright &>/dev/null; then
+    echo "✅ Pyright already installed — skipping"
+    return
+  fi
+  
+  # Check if pip3 is available
+  if ! command -v pip3 &>/dev/null; then
+    echo "⚠️  pip3 is not available. Installing pip3 first..."
+    if [[ "$OS" == "mac" ]]; then
+      brew install python3
+    elif [[ "$OS" == "fedora" ]]; then
+      sudo dnf install -y python3-pip
+    else
+      sudo apt install -y python3-pip
+    fi
+  fi
+  
+  echo "Installing Pyright via pip..."
+  if [[ "$OS" == "mac" ]]; then
+    pip3 install pyright
+  else
+    # Use pip3 with sudo if needed, but try user install first
+    if pip3 install --user pyright; then
+      echo "✅ Pyright installed to user directory"
+    else
+      echo "⚠️  User install failed, trying system install..."
+      sudo pip3 install pyright
+    fi
+  fi
+  
+  # Check installation
+  if command -v pyright &>/dev/null; then
+    echo "✅ Pyright installed successfully"
+    pyright --version || echo "Pyright command available"
+  elif command -v pyright-langserver &>/dev/null; then
+    echo "✅ Pyright langserver installed (as pyright-langserver)"
+  else
+    echo "⚠️  Pyright installation may have succeeded but not in PATH"
+    echo "    Try adding ~/.local/bin to your PATH:"
+    echo "    echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.bashrc"
+    echo "    source ~/.bashrc"
+  fi
+}
+
+install_python_formatters() {
+  if [[ "$INSTALL_PYTHON_DEV" != true ]]; then
+    return
+  fi
+  
+  echo "📦 Installing Python formatters (black, isort)..."
+  
+  # Check if pip3 is available
+  if ! command -v pip3 &>/dev/null; then
+    echo "⚠️  pip3 is not available. Skipping Python formatters."
+    return
+  fi
+  
+  # Check if black is already installed
+  if pip3 list | grep -i black &>/dev/null; then
+    echo "✅ Black already installed — skipping"
+  else
+    echo "Installing black..."
+    if [[ "$OS" == "mac" ]]; then
+      pip3 install black
+    else
+      pip3 install --user black || sudo pip3 install black
+    fi
+    echo "✅ Black installed"
+  fi
+  
+  # Check if isort is already installed
+  if pip3 list | grep -i isort &>/dev/null; then
+    echo "✅ isort already installed — skipping"
+  else
+    echo "Installing isort..."
+    if [[ "$OS" == "mac" ]]; then
+      pip3 install isort
+    else
+      pip3 install --user isort || sudo pip3 install isort
+    fi
+    echo "✅ isort installed"
+  fi
+  
+  echo "✅ Python formatters installed"
 }
 
 install_verible() {
@@ -417,6 +522,7 @@ copy_dotfiles() {
 # Run all steps
 prompt_ai_tools
 prompt_sports_notifiers
+prompt_dev_tools
 echo "⏎ Click enter to proceed with full installation"
 install_common
 install_node
@@ -425,6 +531,8 @@ install_clang
 install_lua
 install_codelldb
 install_verible
+install_pyright
+install_python_formatters
 install_jetbrains_mono
 install_sports_notifiers
 copy_dotfiles
