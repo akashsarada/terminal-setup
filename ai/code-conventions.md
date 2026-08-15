@@ -9,10 +9,6 @@ Stack/project-specific rules (design system, GraphQL, build system, domain vocab
 a machine-local conventions file outside this repo (e.g. `uca-conventions.md`); workflow rules
 (delegation, markdown) in `global-conventions.md`.
 
-## Working With Files
-- Re-read files fresh from disk before acting on them — never rely on a cached/prior version. External processes may have modified them since the last read.
-- Don't commit build artifacts or machine-local absolute paths (e.g. `/Volumes/workplace/...`, `/home/<user>/...`).
-
 ## File Extensions: .ts vs .tsx
 - `.tsx` — files that render JSX (React components, pages, panels, modals, split-pane views)
 - `.ts` — pure TypeScript with no React rendering: helpers, utilities, data transformers, constants, types, enums, codegen output
