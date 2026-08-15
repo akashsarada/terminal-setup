@@ -104,11 +104,14 @@ else
 fi
 
 if command -v agy &>/dev/null || [ -d ~/.gemini ]; then
-  mkdir -p ~/.gemini
+  mkdir -p ~/.gemini/skills/delegation-core
+  mkdir -p ~/.gemini/agents
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.gemini/delegation-core.md
-  echo "✅ AI steering files copied to ~/.gemini/"
+  cp "$SCRIPT_DIR/ai/delegation/workers/skill/SKILL.md" ~/.gemini/skills/delegation-core/SKILL.md
+  cp "$SCRIPT_DIR/ai/delegation/workers/antigravity/"*.json ~/.gemini/agents/
+  echo "✅ AI steering, skill, and agent files copied to ~/.gemini/"
 else
   echo "⏩ Skipped ~/.gemini/ (antigravity not installed)"
 fi
