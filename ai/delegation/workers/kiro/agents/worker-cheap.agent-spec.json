@@ -10,7 +10,7 @@
   "clientConfig": {
     "kiroCli": {
       "tools": ["read", "grep", "glob", "shell"],
-      "allowedTools": ["read", "grep", "glob"],
+      "allowedTools": ["read", "grep", "glob", "shell"],
       "toolsSettings": {
         "shell": {
           "allowedCommands": ["wc .*", "grep .*", "rg .*", "find .*", "ls .*", "head .*", "tail .*", "git -P diff.*", "git -P log.*", "git -P show.*", "git -P blame.*", "git status"],

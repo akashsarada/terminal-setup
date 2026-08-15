@@ -10,11 +10,12 @@ delegation/
 ├── adapters/                  # load on demand, one per runtime
 │   ├── kiro.md                # subagent DAG tool, per-stage model IDs, worker agent
 │   ├── claude-code.md         # Task tool, .claude/agents/* workers
-│   └── antigravity.md         # native dynamic subagents, Rules/Skills steering
+│   └── antigravity.md         # invoke_subagent / define_subagent, model tiers (flash_lite, flash, pro)
 └── workers/                   # minimal worker definitions (the main cost lever)
+    ├── antigravity/{worker-cheap,worker-standard,reviewer}.json
     ├── kiro/agents/*.agent-spec.json        # AIM requires the agents/ subdirectory
     ├── claude-code/{worker-cheap,worker-standard,reviewer}.md
-    └── skill/SKILL.md         # open Agent Skills standard — shared by Antigravity + Claude Code
+    └── skill/SKILL.md         # open Agent Skills standard — shared by all runtimes
 ```
 
 ## Design principles
@@ -56,10 +57,10 @@ sessions that delegate.
 **Claude Code** — reference `core.md` from CLAUDE.md (short pointer, not inline). Copy
 `workers/claude-code/*.md` into `~/.claude/agents/` (global) or `.claude/agents/` (project).
 
-**Antigravity** — copy `workers/skill/` to `~/.gemini/antigravity/skills/delegation-core/`
-(or `<project>/.agent/skills/`). Add one rule line to `~/.gemini/GEMINI.md`: "When decomposing
-into subagents, apply the delegation-core skill." See `adapters/antigravity.md` for why
-per-subagent model pinning is unavailable there.
+**Antigravity** — copy `workers/skill/` to `~/.gemini/config/skills/delegation-core/`
+(or `<project>/.agents/skills/delegation-core/`). Add one rule line to `GEMINI.md` or `.agents/rules/`:
+"When decomposing tasks into subagents or delegating multi-file work, apply the delegation-core skill."
+See `adapters/antigravity.md` for `invoke_subagent` and model tier mapping (`flash_lite`, `flash`, `pro`).
 
 ## Migration notes
 

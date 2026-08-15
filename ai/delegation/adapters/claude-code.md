@@ -33,7 +33,7 @@ Task({ subagent_type: "worker-cheap", description: "Scan test modules",
 |---|---|---|
 | worker-cheap | `worker-cheap` | `model: haiku`, tools: Read, Grep, Glob |
 | worker-standard | `worker-standard` | `model: sonnet`, tools: + Edit, Bash |
-| reviewer | `reviewer` | `model: opus`, tools: Read, Grep, Glob (read-only) |
+| reviewer | `reviewer` | `model: opus`, tools: Read, Grep, Glob, Bash |
 
 Definitions live in `delegation/workers/claude-code/` — symlink or copy them into
 `.claude/agents/` per project (or `~/.claude/agents/` once, globally).

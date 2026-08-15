@@ -1,7 +1,7 @@
 ---
 name: reviewer
-description: Read-only verification worker for correctness-critical review of another worker's output or a diff. Use for briefs marked tier=reviewer.
-tools: Read, Grep, Glob
+description: Verification worker for correctness-critical review of another worker's output or a diff. Use for briefs marked tier=reviewer.
+tools: Read, Grep, Glob, Bash
 model: opus
 ---
 
