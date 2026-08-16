@@ -3,6 +3,7 @@
 # Skip if no remote tracking branch
 git rev-parse --abbrev-ref @{upstream} &>/dev/null || exit 0
 
+echo "Checking Current Branch State"
 git fetch --quiet
 
 LOCAL=$(git rev-parse @)
