@@ -105,12 +105,18 @@ fi
 
 if command -v agy &>/dev/null || [ -d ~/.gemini ]; then
   mkdir -p ~/.gemini/skills/delegation-core
-  mkdir -p ~/.gemini/agents
+  mkdir -p ~/.gemini/config/agents
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.gemini/delegation-core.md
   cp "$SCRIPT_DIR/ai/delegation/workers/skill/SKILL.md" ~/.gemini/skills/delegation-core/SKILL.md
-  cp "$SCRIPT_DIR/ai/delegation/workers/antigravity/"*.json ~/.gemini/agents/
+  for agent_file in "$SCRIPT_DIR/ai/delegation/workers/antigravity/"*.md; do
+    if [ -f "$agent_file" ]; then
+      agent_name=$(basename "$agent_file" .md)
+      mkdir -p "$HOME/.gemini/config/agents/$agent_name"
+      cp "$agent_file" "$HOME/.gemini/config/agents/$agent_name/agent.md"
+    fi
+  done
   echo "✅ AI steering, skill, and agent files copied to ~/.gemini/"
 else
   echo "⏩ Skipped ~/.gemini/ (antigravity not installed)"

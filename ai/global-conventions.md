@@ -38,5 +38,3 @@ delegation workers via their agent-spec `resources`. Employer/project-specific r
 ## Working With Files
 - Re-read files fresh from disk before acting on them — never rely on a cached/prior version. External processes may have modified them since the last read.
 - Don't commit build artifacts or machine-local absolute paths (e.g. `/Volumes/workplace/...`, `/home/<user>/...`).
-
-

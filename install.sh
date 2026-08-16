@@ -510,12 +510,18 @@ copy_dotfiles() {
 
   if [[ "$INSTALL_ANTIGRAVITY" == true ]] || command -v agy &>/dev/null || [ -d "$HOME/.gemini" ]; then
     mkdir -p "$HOME/.gemini/skills/delegation-core"
-    mkdir -p "$HOME/.gemini/agents"
+    mkdir -p "$HOME/.gemini/config/agents"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"
     cp "$SCRIPT_DIR/ai/delegation/workers/skill/SKILL.md" "$HOME/.gemini/skills/delegation-core/SKILL.md"
-    cp "$SCRIPT_DIR/ai/delegation/workers/antigravity/"*.json "$HOME/.gemini/agents/"
+    for agent_file in "$SCRIPT_DIR/ai/delegation/workers/antigravity/"*.md; do
+      if [ -f "$agent_file" ]; then
+        agent_name=$(basename "$agent_file" .md)
+        mkdir -p "$HOME/.gemini/config/agents/$agent_name"
+        cp "$agent_file" "$HOME/.gemini/config/agents/$agent_name/agent.md"
+      fi
+    done
     echo "✅ Copied AI steering, skill, and agent files to ~/.gemini/"
   else
     echo "⏩ Skipped ~/.gemini/ (antigravity not selected/installed)"
