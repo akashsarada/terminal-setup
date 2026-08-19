@@ -25,6 +25,7 @@ return {
       { "<leader>r",  group = "rename" },
       { "<leader>s",  group = "search/swap" },
       { "<leader>t",  group = "test/terminal" },
+      { "<leader>m",  group = "markdown" },
 
       { "<leader>x",  group = "trouble" },
       { "<leader>D",  desc  = "Type definition" },

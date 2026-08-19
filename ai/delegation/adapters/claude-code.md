@@ -24,7 +24,7 @@ Task({ subagent_type: "worker-cheap", description: "Scan test modules",
 | Parallel fan-out | Yes — multiple Task calls in one message |
 | Background / fire-and-forget | No for agents (background Bash exists, but not agent tasks) |
 | Per-spawn model selection | Yes — via `model` in the custom agent's frontmatter (aliases `haiku`/`sonnet`/`opus`), chosen by `subagent_type` |
-| Custom lightweight workers | Yes — `.claude/agents/<name>.md` (project) or `~/.claude/agents/<name>.md` (global): own short system prompt + `tools` allowlist. **This is the main cost lever** — a worker defined this way does NOT inherit the orchestrator's system prompt |
+| Custom lightweight workers | Yes — `.claude/agents/<name>.md` (project) or `~/.claude/agents/<name>.md` (global): own short system prompt + `tools` allowlist. This is the main cost lever — a worker defined this way does NOT inherit the orchestrator's system prompt |
 | Loops | Manual — re-dispatch on a failed review; no built-in loop construct |
 
 ## Tier → worker map (update here only)

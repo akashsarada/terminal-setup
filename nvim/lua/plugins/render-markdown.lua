@@ -5,7 +5,6 @@ return {
 	opts = {
 		pipe_table = {
 			preset = "round",
-			cell = "padded",
 		},
 	},
 }

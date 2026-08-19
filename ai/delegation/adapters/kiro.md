@@ -32,7 +32,7 @@ subagent({
 | Capability | Status |
 |---|---|
 | Parallel fan-out | Yes — independent stages in one call |
-| Background / fire-and-forget | **No** (schema says "not yet implemented") |
+| Background / fire-and-forget | No (schema says "not yet implemented") |
 | Per-spawn model selection | Yes — pinned per tier in the worker agent specs; the per-stage `model` param is an override only. (Unpinned agents silently run on the session default — Opus at 2.2x.) |
 | Custom lightweight workers | Yes — AIM agent specs (see below). Without one, `role` must be an installed agent (`kiro_default`, `amzn-builder`, ...) which loads the FULL steering stack per spawn (~30–50K token prefix) |
 | Loops | Yes — `loop_to` with trigger text + max_iterations (review→fix cycles) |

@@ -1,10 +1,10 @@
 return {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
+    branch = "main",
     build = ":TSUpdate",
     dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     opts = {
-        ensure_installed = { "cpp", "lua", "vim", "markdown", "markdown_inline", "python", "typescript", "javascript", "kotlin" },
+        ensure_installed = { "cpp", "lua", "vim", "markdown", "markdown_inline", "mermaid", "html", "htmldjango", "css", "python", "typescript", "javascript", "kotlin" },
         highlight = { enable = true },
         indent = { enable = true },
         textobjects = {

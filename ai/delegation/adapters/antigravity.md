@@ -36,11 +36,11 @@ invoke_subagent({
 
 | Capability | Status |
 |---|---|
-| Parallel fan-out | **Yes** — multiple subagents in one `invoke_subagent` call |
-| Background / async execution | **Yes** — native non-blocking execution with reactive resume |
-| Per-spawn model selection | **Yes** — via `Model` (`flash_lite`, `flash`, `pro`, `inherit`) |
-| Custom lightweight workers | **Yes** — definitions in `delegation/workers/antigravity/` or built-in `research`/`self` |
-| Workspace isolation | **Yes** — `Workspace: "inherit" | "branch" | "share"` |
+| Parallel fan-out | Yes — multiple subagents in one `invoke_subagent` call |
+| Background / async execution | Yes — native non-blocking execution with reactive resume |
+| Per-spawn model selection | Yes — via `Model` (`flash_lite`, `flash`, `pro`, `inherit`) |
+| Custom lightweight workers | Yes — definitions in `delegation/workers/antigravity/` or built-in `research`/`self` |
+| Workspace isolation | Yes — `Workspace: "inherit" | "branch" | "share"` |
 | Loops | Re-dispatch with tighter brief on failed verification (cap at 3 cycles) |
 
 ## Tier → worker map
