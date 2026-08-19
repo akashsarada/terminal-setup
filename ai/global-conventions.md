@@ -17,7 +17,7 @@ delegation workers via their agent-spec `resources`. Employer/project-specific r
 - **Crisp completion state:** State clearly what was done, which files changed, and the single immediate next action if anything remains open.
 
 ## Git Commits
-- Always use **Conventional Commits** format (`type(scope): description`):
+- Always use **Conventional Commits** format (`type(scope): description`). You must use the following:
   - `feat`: new feature or capability
   - `fix`: bug fix
   - `refactor`: code restructuring with no behavior change
