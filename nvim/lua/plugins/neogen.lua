@@ -23,6 +23,13 @@ return {
     },
     keys = {
       {
+        "<leader>na",
+        function()
+          require("neogen").generate()
+        end,
+        desc = "Neogen: Generate Annotation",
+      },
+      {
         "<leader>m",
         function()
           require("neogen").generate()

@@ -34,6 +34,58 @@ end, { desc = "Focus Neo-tree" })
 map("n", "[d", vim.diagnostic.goto_prev)
 map("n", "]d", vim.diagnostic.goto_next)
 map("n", "K", vim.lsp.buf.hover, {})
+map("n", "<leader>gd", function()
+	local tb = require("telescope.builtin")
+	local ft = vim.bo.filetype
+	local is_web = ft == "html" or ft == "htmldjango" or ft == "jinja" or ft == "javascriptreact" or ft == "typescriptreact"
+
+	if is_web then
+		local cword = vim.fn.expand("<cword>")
+		local line = vim.api.nvim_get_current_line()
+		local col = vim.api.nvim_win_get_cursor(0)[2] + 1
+		local before_cursor = line:sub(1, col)
+		local is_class = before_cursor:match('class%s*=%s*["\'][^"\']*$') ~= nil
+		local is_id = before_cursor:match('id%s*=%s*["\'][^"\']*$') ~= nil
+
+		if is_class and cword ~= "" then
+			tb.grep_string({
+				search = "." .. cword,
+				prompt_title = "CSS Class Definition: ." .. cword,
+			})
+			return
+		elseif is_id and cword ~= "" then
+			tb.grep_string({
+				search = "#" .. cword,
+				prompt_title = "CSS ID Definition: #" .. cword,
+			})
+			return
+		end
+	end
+
+	tb.lsp_definitions()
+end, { desc = "Go to Definition (LSP / CSS)" })
+
+map("n", "<leader>gr", function()
+	local tb = require("telescope.builtin")
+	local ft = vim.bo.filetype
+	local is_css = ft == "css" or ft == "scss" or ft == "less" or ft == "sass"
+	local is_html = ft == "html" or ft == "htmldjango" or ft == "jinja" or ft == "javascriptreact" or ft == "typescriptreact"
+
+	if is_css or is_html then
+		local cword = vim.fn.expand("<cword>")
+		cword = cword:gsub("^[.#]", "")
+		if cword ~= "" then
+			tb.grep_string({
+				search = cword,
+				prompt_title = "Find CSS/HTML Usages: " .. cword,
+			})
+			return
+		end
+	end
+
+	tb.lsp_references()
+end, { desc = "Find References / CSS Usages" })
+
 map("n", "<leader>gc", function()
 	for _, win in ipairs(vim.api.nvim_list_wins()) do
 		local config = vim.api.nvim_win_get_config(win)

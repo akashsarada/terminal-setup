@@ -34,6 +34,13 @@ vim.api.nvim_create_autocmd({"FocusGained", "BufEnter", "CursorHold"}, {
 	command = "silent! checktime",
 })
 
+-- In WSL, route vim.ui.open to default Windows web browser
+if vim.fn.has("wsl") == 1 then
+	vim.ui.open = function(path)
+		vim.fn.jobstart({ "cmd.exe", "/c", "start", '""', path }, { detach = true })
+	end
+end
+
 vim.opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -44,6 +51,13 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt_local.spell = true
 		vim.opt_local.spelllang = "en_us"
 		vim.opt_local.spelloptions = "camel"
+	end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "html", "htmldjango", "css", "scss", "less" },
+	callback = function()
+		vim.opt_local.iskeyword:append("-")
 	end,
 })
 
@@ -59,6 +73,18 @@ vim.filetype.add({
 		as = "as",
 		v = "verilog",
 		sv = "systemverilog",
+		jinja = "htmldjango",
+		jinja2 = "htmldjango",
+		j2 = "htmldjango",
+		djhtml = "htmldjango",
+	},
+	pattern = {
+		[".*%.html%.django"] = "htmldjango",
+		[".*%.django%.html"] = "htmldjango",
+		[".*%.html%.jinja"] = "htmldjango",
+		[".*%.jinja%.html"] = "htmldjango",
+		[".*%.html%.j2"] = "htmldjango",
+		[".*%.j2%.html"] = "htmldjango",
 	},
 })
 

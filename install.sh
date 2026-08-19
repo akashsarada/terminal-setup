@@ -170,9 +170,9 @@ install_neovim_tarball() {
 install_common() {
   echo "📦 Installing common tools..."
   if [[ "$OS" == "mac" ]]; then
-    brew install git curl ripgrep fd cmake python3 tmux neovim jq
+    brew install git curl ripgrep fd cmake python3 tmux neovim jq rust
   elif [[ "$OS" == "fedora" ]]; then
-    sudo dnf install -y git curl ripgrep fd-find python3-pip tmux cmake unzip jq
+    sudo dnf install -y git curl ripgrep fd-find python3-pip tmux cmake unzip jq cargo
     install_neovim_tarball
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin
@@ -182,7 +182,7 @@ install_common() {
     fi
   else
     sudo apt update
-    sudo apt install -y git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools jq
+    sudo apt install -y git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools jq cargo
     install_neovim_tarball
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin

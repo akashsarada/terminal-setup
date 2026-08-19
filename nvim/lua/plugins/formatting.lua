@@ -15,6 +15,12 @@ return {
 				c = { "clang-format" },
 				verilog = { "verible" },
 				systemverilog = { "verible" },
+				html = { "prettierd", "prettier", stop_after_first = true },
+				htmldjango = { "djlint", "prettierd", "prettier", stop_after_first = true },
+				css = { "prettierd", "prettier", stop_after_first = true },
+				scss = { "prettierd", "prettier", stop_after_first = true },
+				javascript = { "prettierd", "prettier", stop_after_first = true },
+				typescript = { "prettierd", "prettier", stop_after_first = true },
 			},
 
 			-- 2. Customize specific formatter settings
