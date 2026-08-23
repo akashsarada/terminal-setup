@@ -25,7 +25,7 @@ return {
         "williamboman/mason-lspconfig.nvim",
         lazy = false,
         opts = {
-            ensure_installed = { "lua_ls", "ts_ls", "jsonls", "clangd", "harper-ls", "kotlin_language_server", "html", "cssls" },
+            ensure_installed = { "lua_ls", "ts_ls", "jsonls", "clangd", "harper_ls", "kotlin_language_server", "html", "cssls" },
         },
     },
     {
