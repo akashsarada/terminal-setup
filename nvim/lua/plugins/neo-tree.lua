@@ -85,5 +85,32 @@ return {
         }
 			},
 		})
+
+		-- Auto-refresh Neo-tree on external changes, git operations, and buffer saves
+		local function refresh_neotree()
+			local ok, manager = pcall(require, "neo-tree.sources.manager")
+			if ok then
+				manager.refresh("filesystem")
+				manager.refresh("git_status")
+			end
+		end
+
+		local refresh_timer = nil
+		local function debounced_refresh()
+			if refresh_timer then
+				refresh_timer:stop()
+				refresh_timer:close()
+				refresh_timer = nil
+			end
+			refresh_timer = vim.defer_fn(function()
+				refresh_neotree()
+				refresh_timer = nil
+			end, 150)
+		end
+
+		vim.api.nvim_create_autocmd({ "FocusGained", "BufWritePost", "FileChangedShellPost", "TermClose", "ShellCmdPost" }, {
+			group = vim.api.nvim_create_augroup("NeoTreeAutoRefresh", { clear = true }),
+			callback = debounced_refresh,
+		})
 	end,
 }
