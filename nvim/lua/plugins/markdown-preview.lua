@@ -1,6 +1,6 @@
 -- Plugin: markdown-preview.nvim
 -- Description: Zero-dependency live markdown preview in default browser with first-class interactive Mermaid diagrams and LaTeX support.
--- Keybinds: <leader>mp (Preview), <leader>ms (Stop preview), <leader>mr (Refresh preview)
+-- Keybinds: <leader>lp / <leader>mp (Preview), <leader>ls / <leader>ms (Stop preview), <leader>lr / <leader>mr (Refresh preview)
 
 return {
   "selimacerbas/markdown-preview.nvim",
@@ -9,22 +9,40 @@ return {
   ft = { "markdown", "mermaid" },
   keys = {
     {
+      "<leader>lp",
+      "<cmd>MarkdownPreview<cr>",
+      desc = "Markdown: Live Preview (Mermaid/Math)",
+      ft = { "markdown", "mermaid" },
+    },
+    {
+      "<leader>ls",
+      "<cmd>MarkdownPreviewStop<cr>",
+      desc = "Markdown: Stop Preview",
+      ft = { "markdown", "mermaid" },
+    },
+    {
+      "<leader>lr",
+      "<cmd>MarkdownPreviewRefresh<cr>",
+      desc = "Markdown: Refresh Preview",
+      ft = { "markdown", "mermaid" },
+    },
+    {
       "<leader>mp",
       "<cmd>MarkdownPreview<cr>",
       desc = "Markdown: Live Preview (Mermaid/Math)",
-      ft = "markdown",
+      ft = { "markdown", "mermaid" },
     },
     {
       "<leader>ms",
       "<cmd>MarkdownPreviewStop<cr>",
       desc = "Markdown: Stop Preview",
-      ft = "markdown",
+      ft = { "markdown", "mermaid" },
     },
     {
       "<leader>mr",
       "<cmd>MarkdownPreviewRefresh<cr>",
       desc = "Markdown: Refresh Preview",
-      ft = "markdown",
+      ft = { "markdown", "mermaid" },
     },
   },
   opts = {

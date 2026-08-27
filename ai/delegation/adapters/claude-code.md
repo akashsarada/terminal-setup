@@ -32,10 +32,11 @@ Task({ subagent_type: "worker-cheap", description: "Scan test modules",
 | Tier | subagent_type | frontmatter |
 |---|---|---|
 | worker-cheap | `worker-cheap` | `model: haiku`, tools: Read, Grep, Glob |
+| challenger | `challenger` | `model: opus`, tools: Read, Grep, Glob |
 | worker-standard | `worker-standard` | `model: sonnet`, tools: + Edit, Bash |
 | reviewer | `reviewer` | `model: opus`, tools: Read, Grep, Glob, Bash |
 
-Definitions live in `delegation/workers/claude-code/` — symlink or copy them into
+Definitions live in `ai/agents/claude-code/` — symlink or copy them into
 `.claude/agents/` per project (or `~/.claude/agents/` once, globally).
 
 ## Context loading caveats

@@ -6,17 +6,16 @@ Claude Code, and Google Antigravity.
 
 ```
 delegation/
+├── SKILL.md                   # open Agent Skills standard — shared by all runtimes
 ├── core.md                    # runtime-agnostic policy — the ONLY always-loaded file
 ├── adapters/                  # load on demand, one per runtime
 │   ├── kiro.md                # subagent DAG tool, per-stage model IDs, worker agent
 │   ├── claude-code.md         # Task tool, .claude/agents/* workers
 │   └── antigravity.md         # invoke_subagent / define_subagent, model tiers (flash_lite, flash, pro)
-└── workers/                   # minimal worker definitions (the main cost lever)
-    ├── antigravity/{worker-cheap,worker-standard,reviewer}.json
-    ├── kiro/agents/*.agent-spec.json        # AIM requires the agents/ subdirectory
-    ├── claude-code/{worker-cheap,worker-standard,reviewer}.md
-    └── skill/SKILL.md         # open Agent Skills standard — shared by all runtimes
+└── context/
+    └── review-checklist.md    # review criteria for tier=reviewer
 ```
+Shared worker definitions live in `ai/agents/` (`antigravity/`, `claude-code/`, `kiro/`).
 
 ## Design principles
 
@@ -28,7 +27,7 @@ delegation/
 3. **Context isolation is the real cost lever**, not model arbitrage. Hence the working-set
    delegation threshold, per-brief batching, hard output caps, and one delegation level.
 4. **Lean workers.** Spawning a full default persona costs a 30–50K-token steering prefix per
-   spawn; the worker definitions here carry ~1–2K. Install them before expecting savings.
+   spawn; the worker definitions in `ai/agents/` carry ~1–2K. Install them before expecting savings.
 
 ## Install
 
@@ -46,7 +45,7 @@ to 3 internal-search tools, `worker-standard`→sonnet, `reviewer`→opus; model
 spec):
 
 ```
-aim agents install --local ~/terminal-setup/ai/delegation/workers/kiro
+aim agents install --local ~/terminal-setup/ai/agents/kiro
 ```
 
 (AIM scans the path for an `agents/` directory — pointing it at a directory without one fails
@@ -55,9 +54,9 @@ with "No AI capabilities components found".) Verify with
 sessions that delegate.
 
 **Claude Code** — reference `core.md` from CLAUDE.md (short pointer, not inline). Copy
-`workers/claude-code/*.md` into `~/.claude/agents/` (global) or `.claude/agents/` (project).
+`ai/agents/claude-code/*.md` into `~/.claude/agents/` (global) or `.claude/agents/` (project).
 
-**Antigravity** — copy `workers/skill/` to `~/.gemini/config/skills/delegation-core/`
+**Antigravity** — copy `ai/delegation/SKILL.md` to `~/.gemini/skills/delegation-core/SKILL.md`
 (or `<project>/.agents/skills/delegation-core/`). Add one rule line to `GEMINI.md` or `.agents/rules/`:
 "When decomposing tasks into subagents or delegating multi-file work, apply the delegation-core skill."
 See `adapters/antigravity.md` for `invoke_subagent` and model tier mapping (`flash_lite`, `flash`, `pro`).

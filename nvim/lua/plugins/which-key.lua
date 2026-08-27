@@ -14,7 +14,7 @@ return {
     wk.add({
       { "<leader>a",  group = "aerial/outline" },
       { "<leader>h",  group = "harpoon" },
-      { "<leader>l",  group = "language" },
+      { "<leader>l",  group = "language/live" },
       { "<leader>c",  group = "cmake" },
       { "<leader>d",  group = "debug" },
       { "<leader>f",  group = "find" },

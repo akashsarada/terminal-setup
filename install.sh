@@ -493,6 +493,7 @@ copy_dotfiles() {
     cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.kiro/steering/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
     cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
+    cp "$SCRIPT_DIR/ai/digital-team/workflow.md" "$HOME/.kiro/steering/digital-team.md"
     echo "✅ Copied AI steering files to ~/.kiro/steering/"
   else
     echo "⏩ Skipped ~/.kiro/steering/ (kiro not selected/installed)"
@@ -503,6 +504,7 @@ copy_dotfiles() {
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.claude/rules/"
     cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.claude/rules/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
+    cp "$SCRIPT_DIR/ai/digital-team/workflow.md" "$HOME/.claude/rules/digital-team.md"
     echo "✅ Copied AI steering files to ~/.claude/rules/"
   else
     echo "⏩ Skipped ~/.claude/rules/ (claude not selected/installed)"
@@ -510,12 +512,15 @@ copy_dotfiles() {
 
   if [[ "$INSTALL_ANTIGRAVITY" == true ]] || command -v agy &>/dev/null || [ -d "$HOME/.gemini" ]; then
     mkdir -p "$HOME/.gemini/skills/delegation-core"
+    mkdir -p "$HOME/.gemini/skills/digital-team"
     mkdir -p "$HOME/.gemini/config/agents"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"
-    cp "$SCRIPT_DIR/ai/delegation/workers/skill/SKILL.md" "$HOME/.gemini/skills/delegation-core/SKILL.md"
-    for agent_file in "$SCRIPT_DIR/ai/delegation/workers/antigravity/"*.md; do
+    cp "$SCRIPT_DIR/ai/digital-team/workflow.md" "$HOME/.gemini/digital-team.md"
+    cp "$SCRIPT_DIR/ai/delegation/SKILL.md" "$HOME/.gemini/skills/delegation-core/SKILL.md"
+    cp "$SCRIPT_DIR/ai/digital-team/SKILL.md" "$HOME/.gemini/skills/digital-team/SKILL.md"
+    for agent_file in "$SCRIPT_DIR/ai/agents/antigravity/"*.md; do
       if [ -f "$agent_file" ]; then
         agent_name=$(basename "$agent_file" .md)
         mkdir -p "$HOME/.gemini/config/agents/$agent_name"

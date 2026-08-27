@@ -43,6 +43,7 @@ subagent({
 |---|---|---|---|
 | worker-cheap | `worker-cheap` | `claude-haiku-4.5` | 0.4 |
 | worker-cheap (internal web/code search) | `worker-research` | `claude-haiku-4.5` | 0.4 |
+| challenger | `challenger` | `claude-opus-4.8` | 2.2 |
 | worker-standard | `worker-standard` | `claude-sonnet-4.6` | 1.3 |
 | reviewer | `reviewer` | `claude-opus-4.8` | 2.2 |
 
@@ -62,8 +63,8 @@ Discover live IDs: `kiro-cli chat --list-models --format json`.
 ## Minimal worker agents
 
 The economics only work with lean workers. The four tier specs live in
-`delegation/workers/kiro/agents/`; install with
-`aim agents install --local <...>/delegation/workers/kiro`. Each carries a ~1K-token system
+`ai/agents/kiro/agents/`; install with
+`aim agents install --local <...>/ai/agents/kiro`. Each carries a ~1K-token system
 prompt, its pinned model, minimal tools, and none of the org steering (smoke-tested: a
 one-file brief on `worker-cheap` costs ~0.03 credits vs 2.12 on an unpinned default-model agent).
 If they are not installed, fall back to `kiro_default` with an explicit `model` per stage,

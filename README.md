@@ -8,7 +8,7 @@ Neovim + tmux + git hooks + AI steering files — portable across macOS, Ubuntu,
 - **tmux.conf** — tmux config (vim nav, cyan/purple theme, OSC 52 clipboard, copy-mode binds)
 - **git-hooks/** — pre-commit (auto-rebase)
 - **font/** — JetBrainsMono Nerd Font
-- **ai/** — AI steering files and delegation framework (Kiro, Claude Code, Antigravity)
+- **ai/** — AI steering files, shared agents, delegation framework, and digital-team workflow (Kiro, Claude Code, Antigravity)
 - **sports/** — live sports notification agents (cross-platform desktop notifications)
 
 ## Setup

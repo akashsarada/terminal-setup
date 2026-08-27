@@ -63,11 +63,11 @@ After installing the tools and running `install.sh`, steering files are placed a
 
 | Tool | Location | Files |
 |---|---|---|
-| Kiro | `~/.kiro/steering/` | global-conventions, delegation-core, delegation-kiro-binding |
-| Claude Code | `~/.claude/rules/` | global-conventions, delegation-core |
-| Antigravity | `~/.gemini/` | global-conventions, delegation-core |
+| Kiro | `~/.kiro/steering/` | global-conventions, delegation-core, delegation-kiro-binding, digital-team |
+| Claude Code | `~/.claude/rules/` | global-conventions, delegation-core, digital-team |
+| Antigravity | `~/.gemini/` | global-conventions, delegation-core, digital-team (skills in ~/.gemini/skills/) |
 
-On-demand files (adapters, worker specs) are read from `~/terminal-setup/ai/delegation/` — no copying needed, the repo IS the source.
+On-demand files (adapters, plan templates) and shared worker specs are read from `~/terminal-setup/ai/delegation/`, `~/terminal-setup/ai/digital-team/`, and `~/terminal-setup/ai/agents/`.
 
 ## WSL-Specific Notes
 

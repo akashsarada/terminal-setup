@@ -8,7 +8,7 @@ description: Apply when decomposing a task into parallel subagents or when a tas
 ## When to delegate — the working-set rule
 
 Delegate only when the raw material a worker must chew through clearly exceeds the fixed
-cost of spawning it: 3+ substantial files, large logs, or broad codebase searches. Below
+cost of spawning it: 2+ files, large logs, or broad codebase searches. Below
 that, do the work inline — it is strictly cheaper. Never delegate a single read or search.
 The payoff is context isolation: the worker absorbs the bulk tokens and returns a summary.
 

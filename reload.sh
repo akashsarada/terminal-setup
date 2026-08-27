@@ -88,6 +88,7 @@ if command -v kiro &>/dev/null || [ -d ~/.kiro ]; then
   cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.kiro/steering/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.kiro/steering/delegation-core.md
   cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" ~/.kiro/steering/delegation-kiro-binding.md
+  cp "$SCRIPT_DIR/ai/digital-team/workflow.md" ~/.kiro/steering/digital-team.md
   echo "✅ AI steering files copied to ~/.kiro/steering/"
 else
   echo "⏩ Skipped ~/.kiro/steering/ (kiro not installed)"
@@ -98,6 +99,7 @@ if command -v claude &>/dev/null || [ -d ~/.claude ]; then
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.claude/rules/
   cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.claude/rules/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.claude/rules/delegation-core.md
+  cp "$SCRIPT_DIR/ai/digital-team/workflow.md" ~/.claude/rules/digital-team.md
   echo "✅ AI steering files copied to ~/.claude/rules/"
 else
   echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
@@ -105,12 +107,15 @@ fi
 
 if command -v agy &>/dev/null || [ -d ~/.gemini ]; then
   mkdir -p ~/.gemini/skills/delegation-core
+  mkdir -p ~/.gemini/skills/digital-team
   mkdir -p ~/.gemini/config/agents
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.gemini/delegation-core.md
-  cp "$SCRIPT_DIR/ai/delegation/workers/skill/SKILL.md" ~/.gemini/skills/delegation-core/SKILL.md
-  for agent_file in "$SCRIPT_DIR/ai/delegation/workers/antigravity/"*.md; do
+  cp "$SCRIPT_DIR/ai/digital-team/workflow.md" ~/.gemini/digital-team.md
+  cp "$SCRIPT_DIR/ai/delegation/SKILL.md" ~/.gemini/skills/delegation-core/SKILL.md
+  cp "$SCRIPT_DIR/ai/digital-team/SKILL.md" ~/.gemini/skills/digital-team/SKILL.md
+  for agent_file in "$SCRIPT_DIR/ai/agents/antigravity/"*.md; do
     if [ -f "$agent_file" ]; then
       agent_name=$(basename "$agent_file" .md)
       mkdir -p "$HOME/.gemini/config/agents/$agent_name"
