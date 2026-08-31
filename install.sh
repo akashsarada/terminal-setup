@@ -124,7 +124,7 @@ install_ai_tools() {
     if command -v kiro &>/dev/null; then
       echo "✅ Kiro already installed — skipping"
     else
-      curl -fsSL https://cli.kiro.dev/install | bash
+      curl -fsSL https://cli.kiro.dev/install | bash 
     fi
     echo "ℹ️  For the Kiro IDE (GUI), download from https://kiro.dev/downloads"
   fi
@@ -501,11 +501,12 @@ copy_dotfiles() {
 
   if [[ "$INSTALL_CLAUDE" == true ]] || command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
     mkdir -p "$HOME/.claude/rules"
+    cp "$SCRIPT_DIR/ai/AGENTS.md" "$HOME/.claude/CLAUDE.md"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.claude/rules/"
     cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.claude/rules/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
     cp "$SCRIPT_DIR/ai/digital-team/workflow.md" "$HOME/.claude/rules/digital-team.md"
-    echo "✅ Copied AI steering files to ~/.claude/rules/"
+    echo "✅ Copied AI steering files to ~/.claude/rules/ and ~/.claude/CLAUDE.md"
   else
     echo "⏩ Skipped ~/.claude/rules/ (claude not selected/installed)"
   fi
@@ -514,6 +515,7 @@ copy_dotfiles() {
     mkdir -p "$HOME/.gemini/skills/delegation-core"
     mkdir -p "$HOME/.gemini/skills/digital-team"
     mkdir -p "$HOME/.gemini/config/agents"
+    cp "$SCRIPT_DIR/ai/AGENTS.md" "$HOME/.gemini/GEMINI.md"
     cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.gemini/"
     cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"

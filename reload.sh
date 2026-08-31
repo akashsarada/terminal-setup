@@ -96,11 +96,12 @@ fi
 
 if command -v claude &>/dev/null || [ -d ~/.claude ]; then
   mkdir -p ~/.claude/rules
+  cp "$SCRIPT_DIR/ai/AGENTS.md" ~/.claude/CLAUDE.md
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.claude/rules/
   cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.claude/rules/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.claude/rules/delegation-core.md
   cp "$SCRIPT_DIR/ai/digital-team/workflow.md" ~/.claude/rules/digital-team.md
-  echo "✅ AI steering files copied to ~/.claude/rules/"
+  echo "✅ AI steering files copied to ~/.claude/rules/ and ~/.claude/CLAUDE.md"
 else
   echo "⏩ Skipped ~/.claude/rules/ (claude not installed)"
 fi
@@ -109,6 +110,7 @@ if command -v agy &>/dev/null || [ -d ~/.gemini ]; then
   mkdir -p ~/.gemini/skills/delegation-core
   mkdir -p ~/.gemini/skills/digital-team
   mkdir -p ~/.gemini/config/agents
+  cp "$SCRIPT_DIR/ai/AGENTS.md" ~/.gemini/GEMINI.md
   cp "$SCRIPT_DIR/ai/global-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/code-conventions.md" ~/.gemini/
   cp "$SCRIPT_DIR/ai/delegation/core.md" ~/.gemini/delegation-core.md
