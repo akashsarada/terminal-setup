@@ -487,52 +487,9 @@ copy_dotfiles() {
     echo "✅ Copied tmux config to ~/.tmux.conf"
   fi
   # Handle AI steering files (for selected tools or already-installed ones)
-  if [[ "$INSTALL_KIRO" == true ]] || command -v kiro &>/dev/null || [ -d "$HOME/.kiro" ]; then
-    mkdir -p "$HOME/.kiro/steering"
-    cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.kiro/steering/"
-    cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.kiro/steering/"
-    cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
-    cp "$SCRIPT_DIR/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
-    cp "$SCRIPT_DIR/ai/digital-team/workflow.md" "$HOME/.kiro/steering/digital-team.md"
-    echo "✅ Copied AI steering files to ~/.kiro/steering/"
-  else
-    echo "⏩ Skipped ~/.kiro/steering/ (kiro not selected/installed)"
-  fi
-
-  if [[ "$INSTALL_CLAUDE" == true ]] || command -v claude &>/dev/null || [ -d "$HOME/.claude" ]; then
-    mkdir -p "$HOME/.claude/rules"
-    cp "$SCRIPT_DIR/ai/AGENTS.md" "$HOME/.claude/CLAUDE.md"
-    cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.claude/rules/"
-    cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.claude/rules/"
-    cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
-    cp "$SCRIPT_DIR/ai/digital-team/workflow.md" "$HOME/.claude/rules/digital-team.md"
-    echo "✅ Copied AI steering files to ~/.claude/rules/ and ~/.claude/CLAUDE.md"
-  else
-    echo "⏩ Skipped ~/.claude/rules/ (claude not selected/installed)"
-  fi
-
-  if [[ "$INSTALL_ANTIGRAVITY" == true ]] || command -v agy &>/dev/null || [ -d "$HOME/.gemini" ]; then
-    mkdir -p "$HOME/.gemini/skills/delegation-core"
-    mkdir -p "$HOME/.gemini/skills/digital-team"
-    mkdir -p "$HOME/.gemini/config/agents"
-    cp "$SCRIPT_DIR/ai/AGENTS.md" "$HOME/.gemini/GEMINI.md"
-    cp "$SCRIPT_DIR/ai/global-conventions.md" "$HOME/.gemini/"
-    cp "$SCRIPT_DIR/ai/code-conventions.md" "$HOME/.gemini/"
-    cp "$SCRIPT_DIR/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"
-    cp "$SCRIPT_DIR/ai/digital-team/workflow.md" "$HOME/.gemini/digital-team.md"
-    cp "$SCRIPT_DIR/ai/delegation/SKILL.md" "$HOME/.gemini/skills/delegation-core/SKILL.md"
-    cp "$SCRIPT_DIR/ai/digital-team/SKILL.md" "$HOME/.gemini/skills/digital-team/SKILL.md"
-    for agent_file in "$SCRIPT_DIR/ai/agents/antigravity/"*.md; do
-      if [ -f "$agent_file" ]; then
-        agent_name=$(basename "$agent_file" .md)
-        mkdir -p "$HOME/.gemini/config/agents/$agent_name"
-        cp "$agent_file" "$HOME/.gemini/config/agents/$agent_name/agent.md"
-      fi
-    done
-    echo "✅ Copied AI steering, skill, and agent files to ~/.gemini/"
-  else
-    echo "⏩ Skipped ~/.gemini/ (antigravity not selected/installed)"
-  fi
+  # shellcheck source=scripts/sync-ai.sh
+  source "$SCRIPT_DIR/scripts/sync-ai.sh"
+  sync_ai_configs "$SCRIPT_DIR" "$INSTALL_KIRO" "$INSTALL_CLAUDE" "$INSTALL_ANTIGRAVITY"
 }
 
 # Run all steps
