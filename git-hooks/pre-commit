@@ -10,7 +10,7 @@ LOCAL=$(git rev-parse @)
 REMOTE=$(git rev-parse @{upstream})
 
 # Already up to date
-[ "$LOCAL" = "$REMOTE" ] && exit 0
+[ "$LOCAL" = "$REMOTE" ] && echo "Up to date" && exit 0
 
 BASE=$(git merge-base @ @{upstream})
 
