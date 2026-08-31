@@ -10,12 +10,12 @@ LOCAL=$(git rev-parse @)
 REMOTE=$(git rev-parse @{upstream})
 
 # Already up to date
-[ "$LOCAL" = "$REMOTE" ] && echo "Up to date" && exit 0
+[ "$LOCAL" = "$REMOTE" ] && echo "Already up to date" && exit 0
 
 BASE=$(git merge-base @ @{upstream})
 
 # Local is ahead — fine to commit
-[ "$REMOTE" = "$BASE" ] && exit 0
+[ "$REMOTE" = "$BASE" ] && echo "Ahead of Remote" && exit 0
 
 # Diverged — block
 [ "$LOCAL" != "$BASE" ] && [ "$REMOTE" != "$BASE" ] && {
