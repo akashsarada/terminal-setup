@@ -419,6 +419,28 @@ install_jetbrains_mono() {
   fi
 }
 
+bootstrap_tpm() {
+  echo "📁 Checking TPM (Tmux Plugin Manager) installation..."
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "🚀 Bootstrapping TPM..."
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+  else
+    echo "✅ TPM already installed."
+  fi
+}
+
+sync_tmux_plugins() {
+  echo "🔄 Installing TPM plugins (resurrect, continuum)..."
+  if [ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]; then
+    tmux start-server 2>/dev/null || true
+    tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
+    "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+    echo "✅ Tmux plugins installed successfully"
+  else
+    echo "⚠️  TPM install script not found at ~/.tmux/plugins/tpm/bin/install_plugins"
+  fi
+}
+
 bootstrap_lazy() {
   echo "📁 Checking Lazy.nvim installation..."
   if [ ! -d "$HOME/.local/share/nvim/lazy/lazy.nvim" ]; then
@@ -509,6 +531,8 @@ install_python_formatters
 install_jetbrains_mono
 install_sports_notifiers
 copy_dotfiles
+bootstrap_tpm
+sync_tmux_plugins
 bootstrap_lazy
 sync_plugins
 

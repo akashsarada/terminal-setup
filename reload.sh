@@ -101,6 +101,18 @@ fi
 # Install JetBrains Mono font
 install_jetbrains_mono
 
+# Ensure TPM and plugins are installed
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  echo "🚀 Bootstrapping TPM..."
+  git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+fi
+if [ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]; then
+  tmux start-server 2>/dev/null || true
+  tmux source-file "$HOME/.tmux.conf" 2>/dev/null || true
+  "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+  echo "✅ Tmux plugins installed/updated"
+fi
+
 # Reload tmux if running
 if tmux info &>/dev/null; then
   tmux source-file ~/.tmux.conf
