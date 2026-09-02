@@ -15,16 +15,14 @@ Execution is asynchronous; the orchestrator automatically resumes upon completio
 invoke_subagent({
   "Subagents": [
     {
-      "TypeName": "research",
+      "TypeName": "worker-cheap",
       "Role": "Search Worker",
-      "Model": "flash_lite",
       "Workspace": "inherit",
       "Prompt": "[WORKER-BRIEF v1] tier=cheap\nGoal: ...\nInputs: ...\nExpected output: ..."
     },
     {
-      "TypeName": "self",
+      "TypeName": "worker-standard",
       "Role": "Code Implementer",
-      "Model": "flash",
       "Workspace": "inherit",
       "Prompt": "[WORKER-BRIEF v1] tier=standard\nGoal: ...\nInputs: ...\nExpected output: ..."
     }
@@ -47,10 +45,10 @@ invoke_subagent({
 
 | Tier | `TypeName` | `Model` | Available Tools | Best For |
 |---|---|---|---|---|
-| worker-cheap | `worker-cheap` / `research` | `flash_lite` | Read-only (`view_file`, `grep_search`, `list_dir`, `search_web`, `read_url_content`) | Search, file reads, log extraction |
-| challenger | `challenger` / `research` | `flash` | Read-only (`view_file`, `grep_search`, `list_dir`) | Adversarial challenge, plan & design stress-testing |
-| worker-standard | `worker-standard` / `self` | `flash` | Read + Write (`view_file`, `replace_file_content`, `write_to_file`, `run_command`) | Code edits, bug fixes, unit tests |
-| reviewer | `reviewer` / `self` | `flash` / `pro` | Read + Command runner | Diff audit, running tests/builds |
+| worker-cheap | `worker-cheap` | `flash_lite` | Read-only (`view_file`, `grep_search`, `list_dir`, `search_web`, `read_url_content`) | Search, file reads, log extraction |
+| challenger | `challenger` | `flash` | Read-only (`view_file`, `grep_search`, `list_dir`) | Adversarial challenge, plan & design stress-testing |
+| worker-standard | `worker-standard` | `flash` | Read + Write (`view_file`, `replace_file_content`, `write_to_file`, `run_command`) | Code edits, bug fixes, unit tests |
+| reviewer | `reviewer` | `pro` | Read + Command runner | Diff audit, running tests/builds |
 
 Definitions live in `ai/agents/antigravity/`.
 
