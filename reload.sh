@@ -36,25 +36,125 @@ install_jetbrains_mono() {
   echo "✅ JetBrains Mono Nerd Font installed to $FONT_DIR"
 }
 
+HARD_RELOAD=false
+
+for arg in "$@"; do
+  case "$arg" in
+    --hard|--sync)
+      HARD_RELOAD=true
+      ;;
+    -h|--help)
+      echo "Usage: $0 [OPTIONS]"
+      echo "Options:"
+      echo "  --hard, --sync   Hard reload: 1-to-1 sync of nvim config (removes unmanaged plugins)"
+      echo "  -h, --help       Show this help message"
+      exit 0
+      ;;
+    *)
+      echo "❌ Unknown argument: $arg"
+      echo "Usage: $0 [--hard|--sync]"
+      exit 1
+      ;;
+  esac
+done
+
 # Backup old configs
-mv ~/.config/nvim/ ~/.config/old_nvim 2>/dev/null || true
+rm -rf ~/.config/old_nvim
+[ -d ~/.config/nvim ] && cp -r ~/.config/nvim ~/.config/old_nvim
 mv ~/.tmux.conf ~/.old_tmux.conf 2>/dev/null || true
 mv ~/.git-hooks ~/.old_git-hooks 2>/dev/null || true
 
-# Copy new configs
-cp -r "$SCRIPT_DIR/nvim" ~/.config/nvim
+# Deploy nvim configuration
+if [ "$HARD_RELOAD" = true ]; then
+  echo "⚠️  Performing hard reload (1:1 sync)..."
+  if command -v rsync &>/dev/null; then
+    mkdir -p ~/.config/nvim
+    rsync -av --delete "$SCRIPT_DIR/nvim/" ~/.config/nvim/
+  else
+    rm -rf ~/.config/nvim
+    cp -r "$SCRIPT_DIR/nvim" ~/.config/nvim
+  fi
+else
+  echo "🧠 Performing smart reload for nvim configs..."
+  mkdir -p ~/.config/nvim/lua/plugins ~/.config/nvim/lua/vim-options ~/.config/nvim/spell
+
+  for file in init.lua lazy-lock.json; do
+    if [ -f "$SCRIPT_DIR/nvim/$file" ]; then
+      if [ ! -f ~/.config/nvim/"$file" ] || ! cmp -s "$SCRIPT_DIR/nvim/$file" ~/.config/nvim/"$file"; then
+        cp "$SCRIPT_DIR/nvim/$file" ~/.config/nvim/"$file"
+        echo "  🔄 Updated base file: $file"
+      fi
+    fi
+  done
+
+  if [ -d "$SCRIPT_DIR/nvim/lua/vim-options" ]; then
+    cp -r "$SCRIPT_DIR/nvim/lua/vim-options/"* ~/.config/nvim/lua/vim-options/ 2>/dev/null || true
+  fi
+  if [ -d "$SCRIPT_DIR/nvim/spell" ]; then
+    cp -r "$SCRIPT_DIR/nvim/spell/"* ~/.config/nvim/spell/ 2>/dev/null || true
+  fi
+
+  SRC_PLUGINS="$SCRIPT_DIR/nvim/lua/plugins"
+  DST_PLUGINS="$HOME/.config/nvim/lua/plugins"
+  mkdir -p "$DST_PLUGINS"
+
+  updated_plugins=0
+  added_plugins=0
+  unchanged_plugins=0
+  preserved_plugins=0
+
+  for src_path in "$SRC_PLUGINS"/*; do
+    [ -e "$src_path" ] || continue
+    name="$(basename "$src_path")"
+    dst_path="$DST_PLUGINS/$name"
+
+    if [ ! -e "$dst_path" ]; then
+      cp -r "$src_path" "$dst_path"
+      added_plugins=$((added_plugins + 1))
+      echo "  ➕ Added plugin: $name"
+    elif [ -d "$src_path" ]; then
+      if ! diff -r -q "$src_path" "$dst_path" &>/dev/null; then
+        rm -rf "$dst_path"
+        cp -r "$src_path" "$dst_path"
+        updated_plugins=$((updated_plugins + 1))
+        echo "  🔄 Updated plugin directory: $name"
+      else
+        unchanged_plugins=$((unchanged_plugins + 1))
+      fi
+    elif ! cmp -s "$src_path" "$dst_path"; then
+      cp "$src_path" "$dst_path"
+      updated_plugins=$((updated_plugins + 1))
+      echo "  🔄 Updated plugin: $name"
+    else
+      unchanged_plugins=$((unchanged_plugins + 1))
+    fi
+  done
+
+  for dst_path in "$DST_PLUGINS"/*; do
+    [ -e "$dst_path" ] || continue
+    name="$(basename "$dst_path")"
+    if [ ! -e "$SRC_PLUGINS/$name" ]; then
+      preserved_plugins=$((preserved_plugins + 1))
+      echo "  🛡️  Preserved custom plugin: $name"
+    fi
+  done
+
+  echo "  📊 Plugins: $added_plugins added, $updated_plugins updated, $unchanged_plugins unchanged, $preserved_plugins preserved."
+fi
+
+# Copy other configs
 cp "$SCRIPT_DIR/tmux.conf" ~/.tmux.conf
 cp -r "$SCRIPT_DIR/git-hooks" ~/.git-hooks
 chmod +x ~/.git-hooks/*
 
 # Verify nvim
 if [ -f ~/.config/nvim/init.lua ] && [ -d ~/.config/nvim/lua/plugins ]; then
-  echo "✅ nvim config copied successfully"
+  echo "✅ nvim config deployed successfully"
   rm -rf ~/.config/old_nvim
 else
-  echo "❌ nvim copy failed — restoring backup"
+  echo "❌ nvim deployment failed — restoring backup"
   rm -rf ~/.config/nvim
-  mv ~/.config/old_nvim ~/.config/nvim
+  [ -d ~/.config/old_nvim ] && mv ~/.config/old_nvim ~/.config/nvim
   exit 1
 fi
 
