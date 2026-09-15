@@ -182,7 +182,7 @@ install_common() {
     fi
   else
     sudo apt update
-    sudo apt install -y git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools jq cargo
+    sudo apt install -y git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools jq cargo sshfs
     install_neovim_tarball
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin
