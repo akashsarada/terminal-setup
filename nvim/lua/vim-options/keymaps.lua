@@ -113,12 +113,43 @@ map("n", "<Leader>dB", function()
 end, { desc = "Debug: Set Conditional Breakpoint" })
 
 -- CMake Keymaps
-map("n", "<leader>cg", ":CMakeGenerate<cr>", { desc = "CMake Generate" })
-map("n", "<leader>cb", ":CMakeBuild<cr>", { desc = "CMake Build" })
-map("n", "<leader>cr", ":CMakeRun<cr>", { desc = "CMake Run" })
-map("n", "<leader>cd", ":CMakeDebug<cr>", { desc = "CMake Debug" })
-map("n", "<leader>ct", ":CMakeSelectBuildType<cr>", { desc = "Select Build Type" })
-map("n", "<leader>cx", ":CMakeStop<cr>", { desc = "Stop CMake Task" })
+map("n", "<leader>cg", ":CMakeGenerate<cr>", { desc = "CMake: Generate" })
+
+map("n", "<leader>cb", function()
+	local cmake = require("cmake-tools")
+	cmake.select_build_target(false, function(res)
+		if res and res:is_ok() then
+			cmake.build()
+		end
+	end)
+end, { desc = "CMake: Select & Build Target" })
+
+map("n", "<leader>cr", function()
+	local cmake = require("cmake-tools")
+	cmake.select_launch_target(false, function(res)
+		if res and res:is_ok() then
+			cmake.run()
+		end
+	end)
+end, { desc = "CMake: Select & Run Target" })
+
+map("n", "<leader>cd", function()
+	local cmake = require("cmake-tools")
+	cmake.select_launch_target(false, function(res)
+		if res and res:is_ok() then
+			cmake.debug()
+		end
+	end)
+end, { desc = "CMake: Select & Debug Target" })
+
+map("n", "<leader>ct", ":CMakeSelectBuildType<cr>", { desc = "CMake: Select Build Type" })
+map("n", "<leader>cx", ":CMakeStop<cr>", { desc = "CMake: Stop Task" })
+
+map("n", "<leader>cs", ":CMakeSelectBuildTarget<cr>", { desc = "CMake: Select Build Target" })
+map("n", "<leader>cl", ":CMakeSelectLaunchTarget<cr>", { desc = "CMake: Select Launch Target" })
+
+map("n", "<leader>cB", ":CMakeBuild<cr>", { desc = "CMake: Build Current Target" })
+map("n", "<leader>cR", ":CMakeRun<cr>", { desc = "CMake: Run Current Target" })
 
 
 
@@ -144,5 +175,11 @@ for i = 1, 9 do
 		{ silent = true, desc = "Move Buffer to Pos " .. i }
 	)
 end
+
+map("n", "<leader>Rc", ":RemoteSSHFSConnect<cr>", { desc = "Remote SSH: Connect" })
+map("n", "<leader>Rd", ":RemoteSSHFSDisconnect<cr>", { desc = "Remote SSH: Disconnect" })
+map("n", "<leader>Rf", ":RemoteSSHFSFindFiles<cr>", { desc = "Remote SSH: Find Files" })
+map("n", "<leader>Rg", ":RemoteSSHFSLiveGrep<cr>", { desc = "Remote SSH: Live Grep" })
+map("n", "<leader>Re", ":RemoteSSHFSEdit<cr>", { desc = "Remote SSH: Edit Config" })
 
 

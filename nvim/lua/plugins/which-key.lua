@@ -23,6 +23,7 @@ return {
       { "<leader>n",  group = "diagnostics/annotate" },
       { "<leader>q",  group = "session" },
       { "<leader>r",  group = "rename" },
+      { "<leader>R",  group = "remote-sshfs" },
       { "<leader>s",  group = "search/swap" },
       { "<leader>t",  group = "test/terminal" },
       { "<leader>m",  group = "markdown" },
