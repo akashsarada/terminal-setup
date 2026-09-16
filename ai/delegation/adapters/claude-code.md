@@ -35,6 +35,7 @@ Task({ subagent_type: "worker-cheap", description: "Scan test modules",
 | challenger | `challenger` | `model: opus`, tools: Read, Grep, Glob |
 | worker-standard | `worker-standard` | `model: sonnet`, tools: + Edit, Bash |
 | reviewer | `reviewer` | `model: opus`, tools: Read, Grep, Glob, Bash |
+| teacher | `teacher` | `model: sonnet`, tools: Read, Grep, Glob, WebSearch |
 
 Definitions live in `ai/agents/claude-code/` — symlink or copy them into
 `.claude/agents/` per project (or `~/.claude/agents/` once, globally).

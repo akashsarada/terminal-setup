@@ -9,19 +9,30 @@ sync_kiro() {
   cp "$script_dir/ai/code-conventions.md" "$HOME/.kiro/steering/"
   cp "$script_dir/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
   cp "$script_dir/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
-  cp "$script_dir/ai/digital-team/workflow.md" "$HOME/.kiro/steering/digital-team.md"
-  echo "✅ Copied AI steering files to ~/.kiro/steering/"
+  mkdir -p "$HOME/.kiro/agents"
+  for agent_spec in "$script_dir/ai/agents/kiro/agents/"*.json; do
+    if [ -f "$agent_spec" ]; then
+      cp "$agent_spec" "$HOME/.kiro/agents/"
+    fi
+  done
+  echo "✅ Copied AI steering and agent files to ~/.kiro/"
 }
 
 sync_claude() {
   local script_dir="$1"
   mkdir -p "$HOME/.claude/rules"
+  mkdir -p "$HOME/.claude/agents"
   cp "$script_dir/ai/AGENTS.md" "$HOME/.claude/CLAUDE.md"
   cp "$script_dir/ai/global-conventions.md" "$HOME/.claude/rules/"
   cp "$script_dir/ai/code-conventions.md" "$HOME/.claude/rules/"
   cp "$script_dir/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
   cp "$script_dir/ai/digital-team/workflow.md" "$HOME/.claude/rules/digital-team.md"
-  echo "✅ Copied AI steering files to ~/.claude/rules/ and ~/.claude/CLAUDE.md"
+  for agent_file in "$script_dir/ai/agents/claude-code/"*.md; do
+    if [ -f "$agent_file" ]; then
+      cp "$agent_file" "$HOME/.claude/agents/"
+    fi
+  done
+  echo "✅ Copied AI steering and agent files to ~/.claude/"
 }
 
 sync_antigravity() {

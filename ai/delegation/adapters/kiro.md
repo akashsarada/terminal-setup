@@ -46,6 +46,7 @@ subagent({
 | challenger | `challenger` | `claude-opus-4.8` | 2.2 |
 | worker-standard | `worker-standard` | `claude-sonnet-4.6` | 1.3 |
 | reviewer | `reviewer` | `claude-opus-4.8` | 2.2 |
+| teacher | `teacher` | `claude-sonnet-4.6` | 1.3 |
 
 Only `worker-research` carries MCP tools — builder-mcp filtered to `ReadInternalWebsites`,
 `InternalCodeSearch`, `InternalSearch` via `--include-tools`, so it loads 3 tool schemas

@@ -49,6 +49,7 @@ invoke_subagent({
 | challenger | `challenger` | `flash` | Read-only (`view_file`, `grep_search`, `list_dir`) | Adversarial challenge, plan & design stress-testing |
 | worker-standard | `worker-standard` | `flash` | Read + Write (`view_file`, `replace_file_content`, `write_to_file`, `run_command`) | Code edits, bug fixes, unit tests |
 | reviewer | `reviewer` | `pro` | Read + Command runner | Diff audit, running tests/builds |
+| teacher | `teacher` | `pro` | Read-only (`view_file`, `grep_search`, `list_dir`, `search_web`, `read_url_content`) | Socratic teaching, concept abstraction, verified learning references |
 
 Definitions live in `ai/agents/antigravity/`.
 
