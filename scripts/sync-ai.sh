@@ -9,6 +9,7 @@ sync_kiro() {
   cp "$script_dir/ai/code-conventions.md" "$HOME/.kiro/steering/"
   cp "$script_dir/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
   cp "$script_dir/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
+  cp "$script_dir/ai/digital-team/workflow.md" "$HOME/.kiro/steering/digital-team.md"
   mkdir -p "$HOME/.kiro/agents"
   for agent_spec in "$script_dir/ai/agents/kiro/agents/"*.json; do
     if [ -f "$agent_spec" ]; then

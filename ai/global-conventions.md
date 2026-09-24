@@ -35,7 +35,7 @@ Mode | Trigger | Strategy
 :--- | :--- | :---
 Inline Execution | < 2 files, minor bug fixes, questions, localized refactors. | Work inline in the main chat session. Lowest latency.
 Ad-Hoc Delegation | Bulk log parsing, broad repo search, 1-shot parallel subtasks across modules. | Apply `delegation-core` (`ai/delegation/core.md`). Spawn `worker-cheap` or `worker-standard` with `[WORKER-BRIEF v1]`.
-Digital Team Pipeline | New feature requests, complex multi-component changes, strict TDD requirements. | Apply `digital-team` (`ai/digital-team/workflow.md`). 5-step pipeline: Feature Plan → Plan Challenge → TDD Worker → Code Reviewer → Dual Loops.
+Digital Team Pipeline | New feature requests, complex multi-component changes, strict TDD requirements. | Apply `digital-team` (`ai/digital-team/workflow.md`). 5-step pipeline: Feature Plan → Plan Challenge → Decoupled TDD (Test & Impl Workers) → Code Reviewer → Dual Loops.
 
 - Shared tier worker definitions live in `ai/agents/`.
 - Runtime mechanics and tier→model mappings live in `delegation/adapters/`.
