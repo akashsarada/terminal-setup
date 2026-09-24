@@ -1,5 +1,6 @@
 ---
 inclusion: always
+trigger: always_on
 ---
 # Code Conventions
 
