@@ -15,30 +15,25 @@ return {
 		local dap = require("dap")
 		local dapui = require("dapui")
 
-		-- Paths to codelldb components installed by Mason
-		local extension_path = vim.fn.stdpath("data") .. "/mason/packages/codelldb/extension/"
-		local codelldb_path = extension_path .. "adapter/codelldb"
-		local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
+		local mason_path = vim.fn.stdpath("data") .. "/mason/packages/codelldb/"
+		local extension_path = vim.fn.isdirectory(mason_path .. "extension/extension") == 1
+			and (mason_path .. "extension/extension/")
+			or (mason_path .. "extension/")
 
-		-- Setup codelldb adapter
-		dap.adapters.codelldb = function(on_adapter)
-			vim.fn.jobstart({ codelldb_path, "--liblldb", liblldb_path, "--port", "0" }, {
-				stdout_buffered = true,
-				on_stdout = function(_, data)
-					for _, line in ipairs(data) do
-						local port = line:match("Listening on port (%d+)")
-						if port then
-							on_adapter({
-								type = "server",
-								host = "127.0.0.1",
-								port = tonumber(port)
-							})
-							break
-						end
-					end
-				end,
-			})
-		end
+		local is_win = vim.fn.has("win32") == 1
+		local is_mac = vim.fn.has("mac") == 1 or vim.fn.has("macunix") == 1
+		local codelldb_path = extension_path .. "adapter/codelldb" .. (is_win and ".exe" or "")
+		local lib_ext = is_mac and ".dylib" or (is_win and ".dll" or ".so")
+		local liblldb_path = extension_path .. "lldb/lib/liblldb" .. lib_ext
+
+		dap.adapters.codelldb = {
+			type = "server",
+			port = "${port}",
+			executable = {
+				command = codelldb_path,
+				args = { "--liblldb", liblldb_path, "--port", "${port}" },
+			},
+		}
 
 		-- Debug configurations
 		dap.configurations.cpp = {
@@ -47,12 +42,31 @@ return {
 				type = "codelldb",
 				request = "launch",
 				program = function()
-						local cmake = require("cmake-tools")
-						local launch_target = cmake.get_launch_target()
-						if launch_target then
-								return launch_target
-						end
-						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+					local cmake = require("cmake-tools")
+					local launch_target = cmake.get_launch_target()
+					if launch_target then
+						return launch_target
+					end
+					return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+				end,
+				cwd = "${workspaceFolder}",
+				stopOnEntry = false,
+			},
+			{
+				name = "Launch file (with arguments)",
+				type = "codelldb",
+				request = "launch",
+				program = function()
+					local cmake = require("cmake-tools")
+					local launch_target = cmake.get_launch_target()
+					if launch_target then
+						return launch_target
+					end
+					return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+				end,
+				args = function()
+					local input = vim.fn.input("Program arguments: ")
+					return vim.split(input, "%s+", { trimempty = true })
 				end,
 				cwd = "${workspaceFolder}",
 				stopOnEntry = false,

@@ -18,7 +18,12 @@ return {
             "mfussenegger/nvim-dap",
         },
         opts = {
-            handlers = {},
+            handlers = {
+                function(config)
+                    require("mason-nvim-dap").default_setup(config)
+                end,
+                codelldb = function() end,
+            },
         },
     },
     {
