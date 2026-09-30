@@ -146,6 +146,25 @@ fi
 cp "$SCRIPT_DIR/tmux.conf" ~/.tmux.conf
 cp -r "$SCRIPT_DIR/git-hooks" ~/.git-hooks
 chmod +x ~/.git-hooks/*
+if [ -f "$SCRIPT_DIR/ghostty/config" ]; then
+  mkdir -p ~/.config/ghostty
+  cp "$SCRIPT_DIR/ghostty/config" ~/.config/ghostty/config
+
+  # Sync to Windows AppData if running inside WSL
+  if command -v cmd.exe &>/dev/null && command -v wslpath &>/dev/null; then
+    for env_var in "LOCALAPPDATA" "APPDATA"; do
+      win_path=$(cmd.exe /c "echo %${env_var}%" < /dev/null 2>/dev/null | tr -d '\r')
+      if [ -n "$win_path" ] && [[ "$win_path" != "%"* ]]; then
+        wsl_dest=$(wslpath "$win_path" 2>/dev/null)
+        if [ -d "$wsl_dest" ]; then
+          mkdir -p "$wsl_dest/ghostinthewsl"
+          cp "$SCRIPT_DIR/ghostty/config" "$wsl_dest/ghostinthewsl/config.ghostinthewsl"
+          cp "$SCRIPT_DIR/ghostty/config" "$wsl_dest/ghostinthewsl/config"
+        fi
+      fi
+    done
+  fi
+fi
 
 # Verify nvim
 if [ -f ~/.config/nvim/init.lua ] && [ -d ~/.config/nvim/lua/plugins ]; then

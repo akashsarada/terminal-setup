@@ -403,18 +403,19 @@ install_jetbrains_mono() {
   echo "✅ JetBrains Mono Nerd Font installed to $FONT_DIR"
 
   # WSL: also install to Windows side so the terminal emulator can use it
-  if grep -qi microsoft /proc/version 2>/dev/null; then
-    local WIN_USER
-    WIN_USER=$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')
-    if [[ -n "$WIN_USER" ]]; then
-      local WIN_FONT_DIR="/mnt/c/Users/$WIN_USER/AppData/Local/Microsoft/Fonts"
+  if grep -qi microsoft /proc/version 2>/dev/null && command -v cmd.exe &>/dev/null && command -v wslpath &>/dev/null; then
+    local WIN_LOCALAPPDATA
+    WIN_LOCALAPPDATA=$(cmd.exe /c "echo %LOCALAPPDATA%" < /dev/null 2>/dev/null | tr -d '\r')
+    if [[ -n "$WIN_LOCALAPPDATA" ]] && [[ "$WIN_LOCALAPPDATA" != "%"* ]]; then
+      local WSL_LOCALAPPDATA
+      WSL_LOCALAPPDATA=$(wslpath "$WIN_LOCALAPPDATA" 2>/dev/null)
+      local WIN_FONT_DIR="$WSL_LOCALAPPDATA/Microsoft/Fonts"
       mkdir -p "$WIN_FONT_DIR"
       cp "$SCRIPT_DIR/font/"*.ttf "$WIN_FONT_DIR/"
       echo "✅ Also installed to Windows fonts ($WIN_FONT_DIR)"
       echo "ℹ️  Select 'JetBrainsMono Nerd Font Mono' in Windows Terminal settings"
     else
-      echo "⚠️  WSL detected but couldn't determine Windows user. Install fonts manually:"
-      echo "   cp font/*.ttf /mnt/c/Users/<YOU>/AppData/Local/Microsoft/Fonts/"
+      echo "⚠️  WSL detected but couldn't determine Windows AppData. Install fonts manually."
     fi
   fi
 }
@@ -507,6 +508,29 @@ copy_dotfiles() {
   else
     cp "$SCRIPT_DIR/tmux.conf" "$HOME/.tmux.conf"
     echo "✅ Copied tmux config to ~/.tmux.conf"
+  fi
+
+  # Handle Ghostty config
+  if [ -f "$SCRIPT_DIR/ghostty/config" ]; then
+    mkdir -p "$HOME/.config/ghostty"
+    cp "$SCRIPT_DIR/ghostty/config" "$HOME/.config/ghostty/config"
+    echo "✅ Copied Ghostty config to ~/.config/ghostty/config"
+
+    # Sync to Windows AppData if running inside WSL
+    if command -v cmd.exe &>/dev/null && command -v wslpath &>/dev/null; then
+      for env_var in "LOCALAPPDATA" "APPDATA"; do
+        win_path=$(cmd.exe /c "echo %${env_var}%" < /dev/null 2>/dev/null | tr -d '\r')
+        if [ -n "$win_path" ] && [[ "$win_path" != "%"* ]]; then
+          wsl_dest=$(wslpath "$win_path" 2>/dev/null)
+          if [ -d "$wsl_dest" ]; then
+            mkdir -p "$wsl_dest/ghostinthewsl"
+            cp "$SCRIPT_DIR/ghostty/config" "$wsl_dest/ghostinthewsl/config.ghostinthewsl"
+            cp "$SCRIPT_DIR/ghostty/config" "$wsl_dest/ghostinthewsl/config"
+            echo "✅ Synced GhostInTheWSL config to Windows %${env_var}%"
+          fi
+        fi
+      done
+    fi
   fi
   # Handle AI steering files (for selected tools or already-installed ones)
   # shellcheck source=scripts/sync-ai.sh
