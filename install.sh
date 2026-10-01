@@ -167,6 +167,30 @@ install_neovim_tarball() {
   echo "✅ Neovim $(nvim --version | head -1 | awk '{print $2}') installed to /opt/nvim"
 }
 
+install_tmux_binary() {
+  # Ubuntu 22.04 apt provides tmux 3.2a which lacks 'allow-passthrough' for image/kitty graphics.
+  # Install official static build from tmux/tmux-builds if tmux < 3.3.
+  if command -v tmux &>/dev/null; then
+    local TMUX_VER
+    TMUX_VER=$(tmux -V 2>/dev/null | awk '{print $2}')
+    if [[ "$TMUX_VER" =~ ^3\.[3-9] ]] || [[ "$TMUX_VER" =~ ^[4-9]\. ]]; then
+      echo "✅ tmux $TMUX_VER already satisfies >=3.3 requirements — skipping"
+      return
+    fi
+  fi
+  local TMUX_ARCH="x86_64"
+  if [[ "$(uname -m)" == "aarch64" ]] || [[ "$(uname -m)" == "arm64" ]]; then
+    TMUX_ARCH="arm64"
+  fi
+  echo "📦 Installing static tmux 3.6a (supports allow-passthrough for graphics)..."
+  mkdir -p "$HOME/.local/bin"
+  local TMP_TGZ="/tmp/tmux-3.6a.tar.gz"
+  curl -sL "https://github.com/tmux/tmux-builds/releases/download/v3.6a/tmux-3.6a-linux-${TMUX_ARCH}.tar.gz" -o "$TMP_TGZ"
+  tar -xzf "$TMP_TGZ" -C "$HOME/.local/bin/"
+  rm -f "$TMP_TGZ"
+  echo "✅ tmux $($HOME/.local/bin/tmux -V) installed to ~/.local/bin/tmux"
+}
+
 install_common() {
   echo "📦 Installing common tools..."
   if [[ "$OS" == "mac" ]]; then
@@ -174,6 +198,7 @@ install_common() {
   elif [[ "$OS" == "fedora" ]]; then
     sudo dnf install -y git curl ripgrep fd-find python3-pip tmux cmake unzip jq cargo
     install_neovim_tarball
+    install_tmux_binary
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin
       if [ ! -e ~/.local/bin/fd ]; then
@@ -184,6 +209,7 @@ install_common() {
     sudo apt update
     sudo apt install -y git curl ripgrep fd-find python3-pip tmux cmake unzip libarchive-tools jq cargo sshfs
     install_neovim_tarball
+    install_tmux_binary
     if ! command -v fd &> /dev/null; then
       mkdir -p ~/.local/bin
       if [ ! -e ~/.local/bin/fd ]; then

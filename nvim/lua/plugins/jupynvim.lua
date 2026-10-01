@@ -9,7 +9,7 @@ return {
     install.run(plugin)
   end,
   opts = {
-    log_level = "info",
+    log_level = "debug",
     image_renderer = "placeholder",
   },
   config = function(_, opts)
