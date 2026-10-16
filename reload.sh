@@ -16,6 +16,48 @@ elif [[ -f /etc/lsb-release ]] || [[ -f /etc/os-release ]]; then
   fi
 fi
 
+is_wsl() {
+  [ -f /proc/version ] && grep -qi microsoft /proc/version && return 0
+  command -v wslpath &>/dev/null && return 0
+  return 1
+}
+
+configure_wsl_automount() {
+  if ! is_wsl; then
+    return 0
+  fi
+
+  if [ -f /etc/wsl.conf ] && grep -q "metadata" /etc/wsl.conf 2>/dev/null; then
+    return 0
+  fi
+
+  if command -v sudo &>/dev/null; then
+    echo "🔧 Configuring automount metadata in /etc/wsl.conf (fixes 777 permissions and ls green boxes)..."
+    sudo python3 -c '
+import os
+conf_path = "/etc/wsl.conf"
+content = ""
+if os.path.exists(conf_path):
+    with open(conf_path, "r") as f:
+        content = f.read()
+lines = content.splitlines()
+if not any("metadata" in l for l in lines):
+    automount_idx = next((i for i, l in enumerate(lines) if l.strip() == "[automount]"), -1)
+    if automount_idx != -1:
+        lines.insert(automount_idx + 1, "options = \"metadata,umask=22,fmask=11\"")
+        content = "\n".join(lines) + "\n"
+    else:
+        if content and not content.endswith("\n"):
+            content += "\n"
+        content += "\n[automount]\noptions = \"metadata,umask=22,fmask=11\"\n"
+    with open(conf_path, "w") as f:
+        f.write(content)
+'
+    echo "✅ Updated /etc/wsl.conf with automount metadata"
+    echo "ℹ️  Run 'wsl.exe --shutdown' from Windows to apply mount changes."
+  fi
+}
+
 install_jetbrains_mono() {
   echo "📦 Installing JetBrains Mono Nerd Font..."
   local FONT_DIR
@@ -144,6 +186,7 @@ fi
 
 # Copy other configs
 cp "$SCRIPT_DIR/tmux.conf" ~/.tmux.conf
+[ -f "$SCRIPT_DIR/.dircolors" ] && cp "$SCRIPT_DIR/.dircolors" ~/.dircolors
 cp -r "$SCRIPT_DIR/git-hooks" ~/.git-hooks
 chmod +x ~/.git-hooks/*
 if [ -f "$SCRIPT_DIR/ghostty/config" ]; then
@@ -237,5 +280,7 @@ if tmux info &>/dev/null; then
   tmux source-file ~/.tmux.conf
   echo "✅ tmux config reloaded"
 fi
+
+configure_wsl_automount
 
 echo "🎉 Done. Restart nvim to pick up changes."

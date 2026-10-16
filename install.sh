@@ -30,16 +30,36 @@ fi
 echo "✅ Detected OS: $OS"
 read
 
+is_wsl() {
+  [ -f /proc/version ] && grep -qi microsoft /proc/version && return 0
+  command -v wslpath &>/dev/null && return 0
+  return 1
+}
+
 # AI tool selection
 INSTALL_KIRO=false
 INSTALL_CLAUDE=false
 INSTALL_ANTIGRAVITY=false
 INSTALL_SPORTS=false
 SPORTS_AUTOSTART=false
+INSTALL_GHOSTTY=false
 
 # Live sports agents (F1 / cricket / World Cup) live in the MeshClaw workspace and
 # share this cross-platform notification backend.
 SPORTS_AGENT_DIR="$HOME/.meshclaw/workspace/f1-agent"
+
+prompt_ghostty() {
+  if ! is_wsl; then
+    return 0
+  fi
+  echo ""
+  echo "👻 GhostInTheWSL Terminal (Ghostty for Windows + WSL):"
+  echo "   🔗 Project: https://github.com/Codavo/ghostinthewsl"
+  echo "   🔗 Releases: https://github.com/Codavo/ghostinthewsl/releases"
+  read -rp "  Download GhostInTheWSL for Windows? [y/N] " ans
+  [[ "$ans" =~ ^[Yy]$ ]] && INSTALL_GHOSTTY=true
+  return 0
+}
 
 prompt_sports_notifiers() {
   echo ""
@@ -484,6 +504,100 @@ sync_plugins() {
   echo "✅ Lazy.nvim plugins synced successfully"
 }
 
+configure_wsl_automount() {
+  if ! is_wsl; then
+    return 0
+  fi
+
+  echo "⚙️  Checking WSL automount configuration (/etc/wsl.conf)..."
+  if [ -f /etc/wsl.conf ] && grep -q "metadata" /etc/wsl.conf 2>/dev/null; then
+    echo "✅ WSL automount metadata already configured in /etc/wsl.conf"
+    return 0
+  fi
+
+  if command -v sudo &>/dev/null; then
+    echo "🔧 Updating /etc/wsl.conf with automount metadata (fixes 777 permissions and ls green boxes)..."
+    sudo python3 -c '
+import os
+conf_path = "/etc/wsl.conf"
+content = ""
+if os.path.exists(conf_path):
+    with open(conf_path, "r") as f:
+        content = f.read()
+lines = content.splitlines()
+if not any("metadata" in l for l in lines):
+    automount_idx = next((i for i, l in enumerate(lines) if l.strip() == "[automount]"), -1)
+    if automount_idx != -1:
+        lines.insert(automount_idx + 1, "options = \"metadata,umask=22,fmask=11\"")
+        content = "\n".join(lines) + "\n"
+    else:
+        if content and not content.endswith("\n"):
+            content += "\n"
+        content += "\n[automount]\noptions = \"metadata,umask=22,fmask=11\"\n"
+    with open(conf_path, "w") as f:
+        f.write(content)
+'
+    echo "✅ /etc/wsl.conf updated"
+    echo "ℹ️  Run 'wsl.exe --shutdown' from Windows PowerShell or CMD to apply mount changes."
+  else
+    echo "⚠️  sudo not available. Add the following to /etc/wsl.conf manually to fix 777 permissions:"
+    echo "   [automount]"
+    echo "   options = \"metadata,umask=22,fmask=11\""
+  fi
+}
+
+install_ghost_windows() {
+  if ! is_wsl; then
+    return 0
+  fi
+
+  echo "👻 GhostInTheWSL (Ghostty for Windows):"
+  echo "   🔗 Releases & Download: https://github.com/Codavo/ghostinthewsl/releases"
+
+  if [[ "$INSTALL_GHOSTTY" != true ]]; then
+    echo "⏩ Skipped GhostInTheWSL download (not selected)"
+    return 0
+  fi
+
+  echo "📦 Downloading GhostInTheWSL installer..."
+  local dest_dir="$HOME/Downloads"
+  if command -v cmd.exe &>/dev/null && command -v wslpath &>/dev/null; then
+    local win_profile
+    win_profile=$(cmd.exe /c "echo %USERPROFILE%" < /dev/null 2>/dev/null | tr -d '\r')
+    if [ -n "$win_profile" ] && [[ "$win_profile" != "%"* ]]; then
+      local win_downloads
+      win_downloads=$(wslpath "$win_profile/Downloads" 2>/dev/null)
+      [ -d "$win_downloads" ] && dest_dir="$win_downloads"
+    fi
+  elif [ -d "/mnt/c/Users" ]; then
+    local win_user
+    win_user=$(ls -1 /mnt/c/Users 2>/dev/null | grep -vE '^(Default|Public|All Users|desktop.ini)$' | head -1)
+    if [ -n "$win_user" ] && [ -d "/mnt/c/Users/$win_user/Downloads" ]; then
+      dest_dir="/mnt/c/Users/$win_user/Downloads"
+    fi
+  fi
+  mkdir -p "$dest_dir"
+
+  local arch="x86_64"
+  if [[ "$(uname -m)" == "aarch64" ]] || [[ "$(uname -m)" == "arm64" ]]; then
+    arch="arm64"
+  fi
+
+  local target_file="$dest_dir/ghostinthewsl-setup.exe"
+  local download_url="https://github.com/Codavo/ghostinthewsl/releases/latest/download/ghostinthewsl-setup.exe"
+  if [[ "$arch" == "arm64" ]]; then
+    download_url="https://github.com/Codavo/ghostinthewsl/releases/latest/download/ghostinthewsl-arm64-setup.exe"
+  fi
+
+  if curl -sSL -f "$download_url" -o "$target_file"; then
+    echo "✅ GhostInTheWSL installer downloaded to: $target_file"
+    echo "ℹ️  Run the installer on Windows to complete setup."
+  else
+    echo "⚠️  Direct download failed or release asset format changed. Please download from:"
+    echo "   👉 https://github.com/Codavo/ghostinthewsl/releases"
+  fi
+}
+
 copy_dotfiles() {
   echo "📂 Preparing to copy Neovim config and tmux.conf..."
 
@@ -536,6 +650,12 @@ copy_dotfiles() {
     echo "✅ Copied tmux config to ~/.tmux.conf"
   fi
 
+  # Handle ~/.dircolors
+  if [ -f "$SCRIPT_DIR/.dircolors" ]; then
+    cp "$SCRIPT_DIR/.dircolors" "$HOME/.dircolors"
+    echo "✅ Copied .dircolors to ~/.dircolors"
+  fi
+
   # Handle Ghostty config
   if [ -f "$SCRIPT_DIR/ghostty/config" ]; then
     mkdir -p "$HOME/.config/ghostty"
@@ -568,6 +688,7 @@ copy_dotfiles() {
 prompt_ai_tools
 prompt_sports_notifiers
 prompt_dev_tools
+prompt_ghostty
 echo "⏎ Click enter to proceed with full installation"
 install_common
 install_node
@@ -580,6 +701,8 @@ install_pyright
 install_python_formatters
 install_jetbrains_mono
 install_sports_notifiers
+configure_wsl_automount
+install_ghost_windows
 copy_dotfiles
 bootstrap_tpm
 sync_tmux_plugins

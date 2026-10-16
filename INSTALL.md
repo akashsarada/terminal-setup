@@ -227,12 +227,20 @@ Background agents can be registered as system login services using `sports/insta
 
 ### Windows Subsystem for Linux (WSL)
 - **Repository Location**: Clone the repository inside the Linux filesystem (`~/terminal-setup`) rather than Windows mount points (`/mnt/c/...`) to ensure fast I/O performance and correct file permissions.
+- **Terminal Emulator (GhostInTheWSL)**:
+  - Supports GPU-accelerated rendering and Kitty graphics protocol on Windows without ConPTY latency.
+  - `install.sh` prompts to automatically download the installer for Windows, or it can be downloaded directly from [GhostInTheWSL Releases](https://github.com/Codavo/ghostinthewsl/releases).
+  - Ghostty configuration files are automatically synced to `%LOCALAPPDATA%\ghostinthewsl` and `%APPDATA%\ghostinthewsl`.
+- **File Permissions & Automount (`/etc/wsl.conf`)**:
+  - `install.sh` and `reload.sh` automatically configure `/etc/wsl.conf` with `metadata,umask=22,fmask=11` under `[automount]`.
+  - This prevents Windows filesystem mounts (`/mnt/c/...`) from defaulting to `777` permissions (`drwxrwxrwx`) and eliminates GNU `ls` green background boxes.
+  - Apply mount changes after initial setup by running `wsl --shutdown` from PowerShell or Command Prompt.
 - **Font Configuration**:
   - `install.sh` and `reload.sh` detect WSL and automatically copy JetBrains Mono Nerd Font files to the Windows host font catalog (`%LOCALAPPDATA%\Microsoft\Fonts`).
   - Open **Windows Terminal Settings > Profiles (WSL) > Appearance > Font face** and select `JetBrainsMono Nerd Font Mono`.
 - **Systemd Background Services**:
   - `systemd --user` units require WSL systemd support to be active.
-  - Add the following configuration to `/etc/wsl.conf` (requires root privileges):
+  - Ensure `/etc/wsl.conf` contains `systemd=true` under `[boot]`:
     ```ini
     [boot]
     systemd=true
