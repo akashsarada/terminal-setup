@@ -46,6 +46,17 @@ a machine-local conventions file outside this repo (e.g. `uca-conventions.md`); 
 - Validate forms schema-first (a schema library as the single source of validation truth)
 - Implement proper error messages for validation failures
 
+## Code Simplicity & Ponytail Principle
+- The best code is the code you never wrote. Avoid premature abstractions and unnecessary wrappers.
+- Climb the Simplicity Ladder before authoring code:
+  1. Does this need to exist at all? (YAGNI — challenge if unnecessary).
+  2. Is it already in the codebase? (Reuse existing utilities/components).
+  3. Does the standard library or runtime platform do it natively? (Native platform over new logic).
+  4. Can an already installed dependency solve it? (Avoid adding new dependencies).
+  5. Can it be done cleanly in minimal lines?
+  6. Implement the absolute minimum code required to satisfy requirements and tests.
+- Simplicity does not compromise security, error handling, trust-boundary validation, or accessibility.
+
 ## Comments — CRITICAL, ALWAYS FOLLOW
 - You MUST NOT add comments that describe what code does — variable names and structure should convey intent
 - You MUST NOT add comments within methods — refactor unclear code instead

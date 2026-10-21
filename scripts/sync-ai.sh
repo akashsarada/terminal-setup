@@ -10,6 +10,7 @@ sync_kiro() {
   cp "$script_dir/ai/delegation/core.md" "$HOME/.kiro/steering/delegation-core.md"
   cp "$script_dir/ai/delegation/adapters/kiro-binding.md" "$HOME/.kiro/steering/delegation-kiro-binding.md"
   cp "$script_dir/ai/digital-team/workflow.md" "$HOME/.kiro/steering/digital-team.md"
+  cp "$script_dir/ai/debugging/workflow.md" "$HOME/.kiro/steering/debugging.md"
   mkdir -p "$HOME/.kiro/agents"
   for agent_spec in "$script_dir/ai/agents/kiro/agents/"*.json; do
     if [ -f "$agent_spec" ]; then
@@ -23,23 +24,30 @@ sync_claude() {
   local script_dir="$1"
   mkdir -p "$HOME/.claude/rules"
   mkdir -p "$HOME/.claude/agents"
+  mkdir -p "$HOME/.claude/skills/debugging"
+  mkdir -p "$HOME/.claude/skills/humanizer"
   cp "$script_dir/ai/AGENTS.md" "$HOME/.claude/CLAUDE.md"
   cp "$script_dir/ai/global-conventions.md" "$HOME/.claude/rules/"
   cp "$script_dir/ai/code-conventions.md" "$HOME/.claude/rules/"
   cp "$script_dir/ai/delegation/core.md" "$HOME/.claude/rules/delegation-core.md"
   cp "$script_dir/ai/digital-team/workflow.md" "$HOME/.claude/rules/digital-team.md"
+  cp "$script_dir/ai/debugging/workflow.md" "$HOME/.claude/rules/debugging.md"
+  cp "$script_dir/ai/debugging/SKILL.md" "$HOME/.claude/skills/debugging/SKILL.md"
+  cp "$script_dir/ai/humanizer/SKILL.md" "$HOME/.claude/skills/humanizer/SKILL.md"
   for agent_file in "$script_dir/ai/agents/claude-code/"*.md; do
     if [ -f "$agent_file" ]; then
       cp "$agent_file" "$HOME/.claude/agents/"
     fi
   done
-  echo "✅ Copied AI steering and agent files to ~/.claude/"
+  echo "✅ Copied AI steering, skill, and agent files to ~/.claude/"
 }
 
 sync_antigravity() {
   local script_dir="$1"
   mkdir -p "$HOME/.gemini/skills/delegation-core"
   mkdir -p "$HOME/.gemini/skills/digital-team"
+  mkdir -p "$HOME/.gemini/skills/debugging"
+  mkdir -p "$HOME/.gemini/skills/humanizer"
   mkdir -p "$HOME/.gemini/config/agents"
   mkdir -p "$HOME/.gemini/rules"
   cp "$script_dir/ai/AGENTS.md" "$HOME/.gemini/GEMINI.md"
@@ -49,8 +57,11 @@ sync_antigravity() {
   cp "$script_dir/ai/code-conventions.md" "$HOME/.gemini/rules/"
   cp "$script_dir/ai/delegation/core.md" "$HOME/.gemini/delegation-core.md"
   cp "$script_dir/ai/digital-team/workflow.md" "$HOME/.gemini/digital-team.md"
+  cp "$script_dir/ai/debugging/workflow.md" "$HOME/.gemini/debugging.md"
   cp "$script_dir/ai/delegation/SKILL.md" "$HOME/.gemini/skills/delegation-core/SKILL.md"
   cp "$script_dir/ai/digital-team/SKILL.md" "$HOME/.gemini/skills/digital-team/SKILL.md"
+  cp "$script_dir/ai/debugging/SKILL.md" "$HOME/.gemini/skills/debugging/SKILL.md"
+  cp "$script_dir/ai/humanizer/SKILL.md" "$HOME/.gemini/skills/humanizer/SKILL.md"
   for agent_file in "$script_dir/ai/agents/antigravity/"*.md; do
     if [ -f "$agent_file" ]; then
       local agent_name

@@ -39,6 +39,7 @@ Digital Team Pipeline | New feature requests, complex multi-component changes, s
 
 - Shared tier worker definitions live in `ai/agents/`.
 - Runtime mechanics and tier→model mappings live in `delegation/adapters/`.
+- Specialized skills: `debugging` (`ai/debugging/SKILL.md`) for systematic 4-step bug triage; `humanizer` (`ai/humanizer/SKILL.md`) for stripping AI writing tells from documentation and PR summaries.
 
 ## Asynchronous Tasks & Background Execution
 - **Reactive Wakeup (Never Poll):** Background processes, subagents (`invoke_subagent`), and async commands automatically send notifications to the orchestrator upon completion.

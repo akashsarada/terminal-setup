@@ -31,8 +31,16 @@ The installation script automates setup across macOS, Ubuntu, and WSL, installin
 The `ai/` directory provides unified instruction sets and structured execution pipelines compatible across multiple AI assistants:
 
 - Kiro: CLI (`cli.kiro.dev`) and IDE configurations synced to `~/.kiro/steering/`
-- Claude Code: CLI tool synced to `~/.claude/rules/`
+- Claude Code: CLI tool synced to `~/.claude/rules/` and `~/.claude/skills/`
 - Antigravity CLI: Tooling (`agy`) synced to `~/.gemini/` and `~/.gemini/skills/`
+
+### Modular Skills & Workflows
+
+- Digital Team (`ai/digital-team/`): Phased feature delivery pipeline with planning, adversarial challenge, decoupled TDD, and independent code review.
+- Delegation Core (`ai/delegation/`): Working-set rules and sentinel briefs (`[WORKER-BRIEF v1]`) for subagent dispatch.
+- Systematic Debugging (`ai/debugging/`): 4-step root-cause reproduction, isolation, minimal fix, and regression verification protocol.
+- Humanizer (`ai/humanizer/`): On-demand skill stripping machine writing tropes and buzzwords from documentation and PR summaries.
+- Ponytail Heuristics: Simplicity ladder and anti-overengineering checks integrated directly into `worker-standard`, `reviewer`, and code conventions.
 
 ### AI Prerequisites
 
@@ -69,4 +77,10 @@ The reload script:
 
 - Font Configuration: On WSL, `install.sh` and `reload.sh` copy JetBrainsMono Nerd Font directly to the Windows font catalog. Configure `JetBrainsMono Nerd Font Mono` in Windows Terminal settings.
 - Repository Location: Keep repository clones inside the Linux filesystem (`~/terminal-setup` or `/home/<user>/...`) rather than Windows mount paths (`/mnt/c/...`) for optimal I/O performance.
+
+## Acknowledgments
+
+- [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail): Simplicity ladder and anti-overengineering heuristic ("the best code is the code you never wrote") integrated into implementation and review workflows.
+- [obra/superpowers](https://github.com/obra/superpowers): Systematic debugging methodology adapted for `ai/debugging/`.
+- [blader/humanizer](https://github.com/blader/humanizer): Behavioral rules for detecting and eliminating AI writing tropes adapted for `ai/humanizer/`.
 

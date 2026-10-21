@@ -38,9 +38,14 @@ Choose between three execution modes based on task scope:
 | Ad-Hoc Delegation | Bulk log parsing, broad repo search, 1-shot parallel subtasks | Use `delegation-core` skill; delegate to `worker-cheap` or `worker-standard`. |
 | Digital Team Pipeline | New feature requests, complex multi-component changes, strict TDD | Use `digital-team` skill; pipeline with `challenger`, `worker-standard`, and `reviewer`. |
 
+Specialized Skills:
+- `debugging`: Systematic 4-step defect triage (reproduce with test -> isolate root cause -> minimal fix -> regression verify).
+- `humanizer`: Strips AI writing tropes, buzzwords, and formulaic phrasing from documentation, PR descriptions, and commit summaries.
+
 ---
 
 ## Universal Code Quality & Comments
+- **Simplicity (Ponytail Principle):** The best code is the code you never wrote. Climb the Simplicity Ladder (YAGNI -> reuse codebase -> native standard library/platform -> existing dependencies -> minimum code). Prohibit premature abstractions and unnecessary dependencies.
 - **Comments Policy (CRITICAL):**
   - Do NOT add comments describing what code does—variable names and structure must convey intent.
   - Do NOT add comments within methods or narrate implementation steps (e.g. `// Fetch data`, `// Return result`).

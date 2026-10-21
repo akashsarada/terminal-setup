@@ -40,13 +40,14 @@ context files (WORKSPACE_CONTEXT.md, AGENTS.md, steering), never from here.
 - Flag any broadened permission, weakened validation, or removed auth check — even if it
   looks intentional.
 
-## Design and maintainability
+## Design and maintainability (Ponytail Simplicity)
 
-- Smallest change that solves the problem. Flag speculative abstraction, unused
-  configurability, and dead code paths.
+- Smallest change that solves the problem. The best code is the code you never wrote.
+- Ponytail audit: Flag speculative abstraction, unnecessary wrappers, unused configurability, and dead code paths.
+- Flag reinvented wheels where the language standard library or runtime platform provides native support.
+- Flag newly introduced third-party dependencies when standard libraries or existing project dependencies suffice.
 - Naming conveys intent; no comments that narrate what the code does.
-- The change follows the surrounding file's existing patterns rather than introducing new
-  ones without cause.
+- The change follows the surrounding file's existing patterns rather than introducing new ones without cause.
 
 ## Performance
 
